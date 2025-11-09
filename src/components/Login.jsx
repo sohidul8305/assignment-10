@@ -14,6 +14,26 @@ const Login = () => {
     const email = event.target.email.value;
     const password = event.target.password.value;
 
+    
+
+
+    const uppercaseReg = /[A-Z]/;
+  const lowercaseReg = /[a-z]/;
+
+  if (!uppercaseReg.test(password)) {
+    toast.error("Password must at least one uppercase letter!");
+    return;
+  }
+  if (!lowercaseReg.test(password)) {
+    toast.error("Password must at least one lowercase letter!");
+    return;
+  }
+  if (password.length < 6) {
+    toast.error("Password must be at least 6 characters long!");
+    return;
+  }
+
+
     createUserWithEmailAndPassword(auth, email, password)
       .then(result => {
         console.log('Email login successful:', result.user);
@@ -99,7 +119,7 @@ const Login = () => {
             </button>
 
             <div className="flex gap-2 justify-center mt-4 text-white">
-              <p>Don’t have an account?</p>
+              <p>Don’t have an account? please</p>
               <Link to="/register" className="text-blue-900 font-semibold underline hover:text-blue-700">
                 Register
               </Link>

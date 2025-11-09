@@ -82,14 +82,12 @@ const Register = () => {
               </svg>
               Login with Google
             </button>
-            <div className="flex gap-5 ml-50">
-              <Link to="/login">
-                {" "}
-                <h2 className="text-blue-900 font-semibold underline hover:text-blue-700">
-                  Login
-                </h2>
-              </Link>
-            </div>
+           <div className="flex gap-2 justify-center mt-4 text-white ml-50">
+                         {/* <p>Conggrates you create account</p> */}
+                         <Link to="/login" className="text-blue-900 font-semibold underline hover:text-blue-700">
+                           Login
+                         </Link>
+                       </div>
           </div>
         </div>
       </div>
