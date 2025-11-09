@@ -1,59 +1,62 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router'; 
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase/firebase.config';
-import { Eye, EyeOff } from 'lucide-react'; // ✅ eye icon
+import { Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false); // 👁 toggle state
+  const [showPassword, setShowPassword] = useState(false); 
   const provider = new GoogleAuthProvider();
+  const navigate = useNavigate(); 
 
   const handleLogin = (event) => {
     event.preventDefault();
     const email = event.target.email.value;
     const password = event.target.password.value;
 
-    
-
-
+    // validation
     const uppercaseReg = /[A-Z]/;
-  const lowercaseReg = /[a-z]/;
+    const lowercaseReg = /[a-z]/;
 
-  if (!uppercaseReg.test(password)) {
-    toast.error("Password must at least one uppercase letter!");
-    return;
-  }
-  if (!lowercaseReg.test(password)) {
-    toast.error("Password must at least one lowercase letter!");
-    return;
-  }
-  if (password.length < 6) {
-    toast.error("Password must be at least 6 characters long!");
-    return;
-  }
+    if (!uppercaseReg.test(password)) {
+      toast.error("Password must at least one uppercase letter!");
+      return;
+    }
+    if (!lowercaseReg.test(password)) {
+      toast.error("Password must at least one lowercase letter!");
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long!");
+      return;
+    }
 
-
+ 
     createUserWithEmailAndPassword(auth, email, password)
       .then(result => {
         console.log('Email login successful:', result.user);
-          toast.success("Login successful!");
+        toast.success("Login successful!");
+        navigate('/'); 
       })
       .catch(error => {
         console.error('Email login error:', error.message);
-         toast.error("this email is already used");
+        toast.error("This email is already used");
       });
   };
+
 
   const handleGoogleLogin = () => {
     signInWithPopup(auth, provider)
       .then(result => {
         const user = result.user;
-       
         console.log('Google login successful:', user);
+        toast.success("Google Login successful!");
+        navigate('/'); 
       })
       .catch(error => {
         console.error('Google login error:', error.message);
+        toast.error("Google login failed");
       });
   };
 
@@ -76,8 +79,6 @@ const Login = () => {
                 />
 
                 <label className="label text-white">Password</label>
-
-                {/* 🔽 Password Input with Eye Toggle */}
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -100,7 +101,6 @@ const Login = () => {
               </fieldset>
             </form>
 
-            {/* Google Login Button */}
             <button
               onClick={handleGoogleLogin}
               className="btn bg-white text-black border-[#e5e5e5] w-full mt-3"
