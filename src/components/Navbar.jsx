@@ -2,6 +2,8 @@ import React, { use } from 'react';
 import { NavLink } from 'react-router';
 import { AuthContext } from '../Provider/AuthProvider';
 
+
+
 const Navbar = () => {
   const {user} = use(AuthContext)
     return (
@@ -21,6 +23,7 @@ const Navbar = () => {
          <div className=''>{user && user.email}</div>
     </div>
   </div>
+
    
 </div>
 
