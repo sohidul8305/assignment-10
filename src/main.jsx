@@ -12,7 +12,8 @@ import AuthProvider from './Provider/AuthProvider.jsx'
 import { Toaster } from 'react-hot-toast'
 import TopStudy from './components/TopStudy.jsx'
 import StudyCards from './components/StudyCards.jsx'
-import StudyDetails from './components/StudyDetails.jsx'
+import PartnerDetails from './components/PartnerDetaills.jsx'
+
 
 
 
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       {
         index: true, 
         element: <Home />,
+         loader: () => fetch("http://localhost:3000/study"),
       },
       {
         path: "findpartners",
@@ -49,9 +51,13 @@ const router = createBrowserRouter([
        
       },
       {
-        path: "studydetails",
-        element: <StudyDetails />,
-      }
+        path: "partnerdetails",
+        element: <PartnerDetails />,
+        loader: ({ params }) =>
+    fetch(`http://localhost:3000/study/${params.id}`),
+       
+      },
+    
     
     ],
   },

@@ -1,20 +1,21 @@
 import React from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router";
 
-const StudyDetails = () => {
- 
+const PartnerDetails = () => {
+
   const data = useLoaderData();
-  const study = data.result || data; 
+  const partner = data.result || data; 
 
-  if (!study) {
+  if (!partner) {
     return (
       <div className="text-center text-red-500 mt-10">
-        No study partner data found!
+        No partner data found!
       </div>
     );
   }
 
-  const { name, image, skills, rating, email, bio } = study;
+ 
+  const { name, image, skills, rating, email, bio } = partner;
 
   return (
     <div className="max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-2xl p-6">
@@ -28,13 +29,13 @@ const StudyDetails = () => {
         <p className="text-gray-600 mb-4">⭐ Rating: {rating || "N/A"}</p>
       </div>
 
-      <div className="border-t pt-4 space-y-2">
+      <div className="border-t pt-4 space-y-2 text-left">
         <p>
           <strong>Email:</strong> {email || "Not provided"}
         </p>
         <p>
           <strong>Skills:</strong>{" "}
-          {Array.isArray(skills) ? skills.join(", ") : "No skills listed"}
+          {Array.isArray(skills) ? skills.join(", ") : skills || "No skills listed"}
         </p>
         <p>
           <strong>Bio:</strong> {bio || "No bio available"}
@@ -44,4 +45,4 @@ const StudyDetails = () => {
   );
 };
 
-export default StudyDetails;
+export default PartnerDetails;
