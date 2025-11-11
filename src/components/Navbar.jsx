@@ -54,7 +54,7 @@ const Navbar = () => {
               Find Partners
             </NavLink>
 
-            {user ? (
+            {user ?  (
               <>
                 <NavLink
                   to="/createprofile"
