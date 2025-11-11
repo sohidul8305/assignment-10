@@ -28,7 +28,7 @@ const StudyCards = ({ study }) => {
         </p>
 
         <div className="card-actions justify-end">
-          <Link to={`/study-partnerdetails/${_id}`}>
+          <Link to={`/partnerdetails/${study._id}`}>
             <button className="btn btn-primary">View Profile</button>
           </Link>
         </div>

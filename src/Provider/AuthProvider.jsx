@@ -22,7 +22,9 @@ const AuthProvider = ({ children }) => {
 
   const login = (userData) => setUser(userData);
 
- 
+  
+
+    
   const logout = () => {
     signOut(auth)
       .then(() => setUser(null))
