@@ -1,13 +1,17 @@
-import React from "react";
+
 import { useLoaderData, Link } from "react-router";
+import { useNavigate } from "react-router";
+
+ 
 
 const TopStudy = () => {
+    const navigate = useNavigate();
   const data = useLoaderData();
 
   const topRated = [...data]
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 3);
-
+ navigate("/login");
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
       <h2 className="text-3xl font-bold text-center mb-6">

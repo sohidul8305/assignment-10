@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router'; 
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase/firebase.config';
 import { Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { AuthContext } from '../Provider/AuthProvider';
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
+  const { login } = useContext(AuthContext);
   const provider = new GoogleAuthProvider();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -18,13 +20,12 @@ const Login = () => {
     // validation
     const uppercaseReg = /[A-Z]/;
     const lowercaseReg = /[a-z]/;
-
     if (!uppercaseReg.test(password)) {
-      toast.error("Password must at least one uppercase letter!");
+      toast.error("Password must contain at least one uppercase letter!");
       return;
     }
     if (!lowercaseReg.test(password)) {
-      toast.error("Password must at least one lowercase letter!");
+      toast.error("Password must contain at least one lowercase letter!");
       return;
     }
     if (password.length < 6) {
@@ -32,30 +33,36 @@ const Login = () => {
       return;
     }
 
- 
+
     createUserWithEmailAndPassword(auth, email, password)
       .then(result => {
-        console.log('Email login successful:', result.user);
+        const userData = {
+          email: result.user.email,
+          photoURL: result.user.photoURL || "https://i.ibb.co/YpJ2zH8/default-avatar.png"
+        };
+        login(userData);
         toast.success("Login successful!");
-        navigate('/'); 
+        navigate('/');
       })
       .catch(error => {
-        console.error('Email login error:', error.message);
-        toast.error("This email is already used");
+        console.error(error.message);
+        toast.error("Login failed. Maybe email already used?");
       });
   };
-
 
   const handleGoogleLogin = () => {
     signInWithPopup(auth, provider)
       .then(result => {
-        const user = result.user;
-        console.log('Google login successful:', user);
+        const userData = {
+          email: result.user.email,
+          photoURL: result.user.photoURL || "https://i.ibb.co/YpJ2zH8/default-avatar.png"
+        };
+        login(userData);
         toast.success("Google Login successful!");
-        navigate('/'); 
+        navigate('/');
       })
       .catch(error => {
-        console.error('Google login error:', error.message);
+        console.error(error.message);
         toast.error("Google login failed");
       });
   };
@@ -70,13 +77,7 @@ const Login = () => {
             <form onSubmit={handleLogin}>
               <fieldset className="fieldset space-y-2">
                 <label className="label text-white">Email</label>
-                <input
-                  type="email"
-                  className="input"
-                  name="email"
-                  placeholder="Email"
-                  required
-                />
+                <input type="email" className="input" name="email" placeholder="Email" required />
 
                 <label className="label text-white">Password</label>
                 <div className="relative">
@@ -103,10 +104,9 @@ const Login = () => {
 
             <button
               onClick={handleGoogleLogin}
-              className="btn bg-white text-black border-[#e5e5e5] w-full mt-3"
+              className="btn bg-white text-black border-[#e5e5e5] w-full mt-3 flex items-center justify-center"
             >
-              <svg aria-label="Google logo" width="16" height="16" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512" className="mr-2">
+              <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="mr-2">
                 <g>
                   <path d="m0 0H512V512H0" fill="#fff"></path>
                   <path fill="#34a853" d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"></path>
