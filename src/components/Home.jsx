@@ -1,9 +1,9 @@
 import React from 'react';
-import BannerCarousel from './BannerCarousel';
 import TopStudy from './TopStudy';
 import { data } from 'react-router';
 import HowItWorks from './HowItWorks';
 import Testimonials from './Testimonials';
+import BannerCarousel from './BannerCarousel';
 
 const Home = () => {
   return (

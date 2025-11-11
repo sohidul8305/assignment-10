@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { NavLink } from "react-router";
 import { AuthContext } from "../Provider/AuthProvider";
 import { Menu, X } from "lucide-react";
+import studylogo from "../assets/studylogo.jpg";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -15,44 +16,96 @@ const Navbar = () => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-    <nav className="bg-gray-700 text-white shadow-sm sticky top-0 z-50">
+    <nav className="bg-gray-800 text-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
-          <NavLink to="/" className="text-xl font-bold flex gap-1">
-            <span className="text-teal-400">Study</span>
-            <span className="text-blue-400">Plants</span>
-          </NavLink>
+        {/* Navbar main container */}
+        <div className="flex justify-between items-center h-16">
+
+          
+          <div className="flex items-center gap-2">
+            <img
+              className="h-10 w-10 rounded-full object-cover"
+              src={studylogo}
+              alt="StudyMate Logo"
+            />
+            <NavLink to="/" className="text-2xl font-bold flex gap-1">
+              <span className="text-teal-400">Study</span>
+              <span className="text-blue-400">Mate</span>
+            </NavLink>
+          </div>
 
           {/* Desktop Menu */}
-          <ul className="hidden md:flex gap-5 font-bold items-center">
-            <NavLink to="/"><li>Home</li></NavLink>
-            <NavLink to="/findpartners"><li>Find Partners</li></NavLink>
+          <ul className="hidden md:flex gap-6 font-semibold items-center">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
+              }
+            >
+              Home
+            </NavLink>
+
+            <NavLink
+              to="/findpartners"
+              className={({ isActive }) =>
+                `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
+              }
+            >
+              Find Partners
+            </NavLink>
 
             {user ? (
               <>
-                <NavLink to="/createprofile"><li>Create Partner Profile</li></NavLink>
-                <NavLink to="/myconnections"><li>My Connections</li></NavLink>
-                <li>
-                  <button
-                    onClick={handleLogout}
-                    className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded"
-                  >
-                    Logout
-                  </button>
-                </li>
-                <li>
-                  <img
-                    src={user.photoURL || "https://i.ibb.co/YpJ2zH8/default-avatar.png"}
-                    alt="User"
-                    className="w-8 h-8 rounded-full border-2 border-blue-400"
-                  />
-                </li>
+                <NavLink
+                  to="/createprofile"
+                  className={({ isActive }) =>
+                    `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
+                  }
+                >
+                  Create Profile
+                </NavLink>
+
+                <NavLink
+                  to="/myconnections"
+                  className={({ isActive }) =>
+                    `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
+                  }
+                >
+                  My Connections
+                </NavLink>
+
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm font-semibold transition"
+                >
+                  Logout
+                </button>
+
+                <img
+                  src={user.photoURL || "https://i.ibb.co/YpJ2zH8/default-avatar.png"}
+                  alt="User"
+                  className="w-8 h-8 rounded-full border-2 border-blue-400"
+                />
               </>
             ) : (
               <>
-                <NavLink to="/login"><li>Login</li></NavLink>
-                <NavLink to="/register"><li>Register</li></NavLink>
+                <NavLink
+                  to="/login"
+                  className={({ isActive }) =>
+                    `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
+                  }
+                >
+                  Login
+                </NavLink>
+
+                <NavLink
+                  to="/register"
+                  className={({ isActive }) =>
+                    `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
+                  }
+                >
+                  Register
+                </NavLink>
               </>
             )}
           </ul>
@@ -60,26 +113,40 @@ const Navbar = () => {
           {/* Mobile Hamburger */}
           <div className="md:hidden flex items-center">
             <button onClick={toggleMenu}>
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              {menuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <ul className="md:hidden bg-gray-700 px-4 pt-4 pb-4 space-y-2 font-bold">
-          <NavLink to="/" onClick={() => setMenuOpen(false)}><li>Home</li></NavLink>
-          <NavLink to="/findpartners" onClick={() => setMenuOpen(false)}><li>Find Partners</li></NavLink>
+        <ul className="md:hidden bg-gray-800 px-6 py-4 space-y-3 text-lg font-semibold">
+          <NavLink to="/" onClick={() => setMenuOpen(false)}>
+            <li className="hover:text-teal-400">Home</li>
+          </NavLink>
+
+          <NavLink to="/findpartners" onClick={() => setMenuOpen(false)}>
+            <li className="hover:text-teal-400">Find Partners</li>
+          </NavLink>
 
           {user ? (
             <>
-              <NavLink to="/createprofile" onClick={() => setMenuOpen(false)}><li>Create Partner Profile</li></NavLink>
-              <NavLink to="/myconnections" onClick={() => setMenuOpen(false)}><li>My Connections</li></NavLink>
+              <NavLink to="/createprofile" onClick={() => setMenuOpen(false)}>
+                <li className="hover:text-teal-400">Create Profile</li>
+              </NavLink>
+
+              <NavLink to="/myconnections" onClick={() => setMenuOpen(false)}>
+                <li className="hover:text-teal-400">My Connections</li>
+              </NavLink>
+
               <li>
                 <button
-                  onClick={() => { handleLogout(); setMenuOpen(false); }}
-                  className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded w-full text-left"
+                  onClick={() => {
+                    handleLogout();
+                    setMenuOpen(false);
+                  }}
+                  className="bg-red-500 hover:bg-red-600 w-full text-left px-3 py-2 rounded"
                 >
                   Logout
                 </button>
@@ -87,8 +154,13 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <NavLink to="/login" onClick={() => setMenuOpen(false)}><li>Login</li></NavLink>
-              <NavLink to="/register" onClick={() => setMenuOpen(false)}><li>Register</li></NavLink>
+              <NavLink to="/login" onClick={() => setMenuOpen(false)}>
+                <li className="hover:text-teal-400">Login</li>
+              </NavLink>
+
+              <NavLink to="/register" onClick={() => setMenuOpen(false)}>
+                <li className="hover:text-teal-400">Register</li>
+              </NavLink>
             </>
           )}
         </ul>
