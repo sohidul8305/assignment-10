@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router'; 
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import {  signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebase.config';
 import { Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -34,7 +34,7 @@ const Login = () => {
     }
 
 
-    createUserWithEmailAndPassword(auth, email, password)
+   signInWithEmailAndPassword(auth, email, password)
       .then(result => {
         const userData = {
           email: result.user.email,

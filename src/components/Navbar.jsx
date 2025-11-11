@@ -3,6 +3,7 @@ import { NavLink } from "react-router";
 import { AuthContext } from "../Provider/AuthProvider";
 import { Menu, X } from "lucide-react";
 import studylogo from "../assets/studylogo.jpg";
+import { FaCircleUser } from "react-icons/fa6";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -20,8 +21,6 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Navbar main container */}
         <div className="flex justify-between items-center h-16">
-
-          
           <div className="flex items-center gap-2">
             <img
               className="h-10 w-10 rounded-full object-cover"
@@ -54,7 +53,7 @@ const Navbar = () => {
               Find Partners
             </NavLink>
 
-            {user ?  (
+            {user ? (
               <>
                 <NavLink
                   to="/createprofile"
@@ -82,7 +81,10 @@ const Navbar = () => {
                 </button>
 
                 <img
-                  src={user.photoURL || "https://i.ibb.co/YpJ2zH8/default-avatar.png"}
+                  src={
+                    user.photoURL ||
+                  <FaCircleUser />
+                  }
                   alt="User"
                   className="w-8 h-8 rounded-full border-2 border-blue-400"
                 />
