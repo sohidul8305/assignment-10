@@ -13,6 +13,8 @@ import { Toaster } from 'react-hot-toast'
 import TopStudy from './components/TopStudy.jsx'
 import StudyCards from './components/StudyCards.jsx'
 import PartnerDetails from './components/PartnerDetaills.jsx'
+import Profileuser from './components/Profileuser.jsx'
+import CreatePartnerProfile from './components/CreatePartnerProfile.jsx'
 
 
 
@@ -50,6 +52,16 @@ const router = createBrowserRouter([
       {
         path: "studycards",
         element: <StudyCards />,
+       
+      },
+      {
+        path: "profileuser",
+        element: <Profileuser />,
+       
+      },
+      {
+        path: "createpartnerprofile",
+        element: <CreatePartnerProfile />,
        
       },
       {

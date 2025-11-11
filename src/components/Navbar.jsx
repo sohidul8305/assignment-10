@@ -56,7 +56,7 @@ const Navbar = () => {
             {user ? (
               <>
                 <NavLink
-                  to="/createprofile"
+                  to="/createpartnerprofile"
                   className={({ isActive }) =>
                     `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
                   }
@@ -89,6 +89,7 @@ const Navbar = () => {
                   className="w-8 h-8 rounded-full border-2 border-blue-400"
                 />
               </>
+              
             ) : (
               <>
                 <NavLink
