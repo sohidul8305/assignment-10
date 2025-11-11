@@ -4,9 +4,9 @@ import { useLoaderData } from "react-router";
 const PartnerDetails = () => {
 
   const data = useLoaderData();
-  const partner = data.result || data; 
+  const study = data.result || data; 
 
-  if (!partner) {
+  if (!study) {
     return (
       <div className="text-center text-red-500 mt-10">
         No partner data found!
@@ -15,7 +15,7 @@ const PartnerDetails = () => {
   }
 
  
-  const { name, image, skills, rating, email, bio } = partner;
+  const { name, image, skills, rating, email, bio, country } = study;
 
   return (
     <div className="max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-2xl p-6">
@@ -31,7 +31,7 @@ const PartnerDetails = () => {
 
       <div className="border-t pt-4 space-y-2 text-left">
         <p>
-          <strong>Email:</strong> {email || "Not provided"}
+          <strong>Email:</strong> {email || "No bio available"}
         </p>
         <p>
           <strong>Skills:</strong>{" "}
@@ -39,6 +39,9 @@ const PartnerDetails = () => {
         </p>
         <p>
           <strong>Bio:</strong> {bio || "No bio available"}
+        </p>
+        <p>
+          <strong>Country:</strong> {country || "Bangladesh"}
         </p>
       </div>
     </div>

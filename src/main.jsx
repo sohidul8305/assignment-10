@@ -30,7 +30,7 @@ const router = createBrowserRouter([
       {
         path: "findpartners",
         element: <FindPartners />,
-         loader: () => fetch('http://localhost:3000/study')
+         loader: () => fetch('http://localhost:3000/study'),
       },
       {
         path: "login",
@@ -43,6 +43,8 @@ const router = createBrowserRouter([
       {
         path: "topstudy",
         element: <TopStudy />,
+          loader: ({ params }) =>
+    fetch(`http://localhost:3000/study/${params.id}`),
        
       },
       {
@@ -51,7 +53,7 @@ const router = createBrowserRouter([
        
       },
       {
-        path: "partnerdetails",
+        path: "partnerdetails/:id",
         element: <PartnerDetails />,
         loader: ({ params }) =>
     fetch(`http://localhost:3000/study/${params.id}`),

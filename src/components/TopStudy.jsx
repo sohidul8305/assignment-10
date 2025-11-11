@@ -15,7 +15,7 @@ const TopStudy = () => {
         {topRated.map((study) => (
           <div
             key={study._id}
-            className="bg-white shadow-md hover:shadow-lg transition-shadow rounded-2xl overflow-hidden flex flex-col"
+            className="bg-white shadow-md hover:shadow-lg transition-shadow rounded-2xl overflow-hidden flex flex-col "
           >
             <figure className="h-48 w-full overflow-hidden">
               <img
