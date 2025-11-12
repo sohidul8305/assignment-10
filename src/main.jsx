@@ -2,7 +2,7 @@ import { Component, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { createBrowserRouter, RouterProvider } from 'react-router'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router'
 import Root from './Layouts/Root.jsx'
 import Home from './components/Home.jsx'
 import FindPartners from './components/FindPartners.jsx'
@@ -16,9 +16,8 @@ import PartnerDetails from './components/PartnerDetaills.jsx'
 import Profileuser from './components/Profileuser.jsx'
 import CreatePartnerProfile from './components/CreatePartnerProfile.jsx'
 import MyConnection from './components/MyConnection.jsx'
-
-
-
+import LoadingSpinner from './components/LoadingSpinner.jsx'
+import NotFound from './components/NotFound.jsx'
 
 const router = createBrowserRouter([
   {
@@ -28,12 +27,12 @@ const router = createBrowserRouter([
       {
         index: true, 
         element: <Home />,
-         loader: () => fetch("http://localhost:3000/study"),
+        loader: () => fetch("http://localhost:3000/study"),
       },
       {
         path: "findpartners",
         element: <FindPartners />,
-         loader: () => fetch('http://localhost:3000/study'),
+        loader: () => fetch('http://localhost:3000/study'),
       },
       {
         path: "login",
@@ -46,40 +45,36 @@ const router = createBrowserRouter([
       {
         path: "topstudy",
         element: <TopStudy />,
-          loader: ({ params }) =>
-    fetch(`http://localhost:3000/study/${params.id}`),
-       
+        loader: ({ params }) => fetch(`http://localhost:3000/study/${params.id}`),
       },
       {
         path: "studycards",
         element: <StudyCards />,
-       
       },
       {
         path: "profileuser",
         element: <Profileuser />,
-       
       },
       {
         path: "createpartnerprofile",
         element: <CreatePartnerProfile />,
-       
       },
       {
         path: "myconnections",
         element: <MyConnection />,
-        
-       
+      },
+      {
+        path: "loadingspinner",
+        element: <LoadingSpinner />,
       },
       {
         path: "partnerdetails/:id",
         element: <PartnerDetails />,
-        loader: ({ params }) =>
-    fetch(`http://localhost:3000/study/${params.id}`),
-       
+        loader: ({ params }) => fetch(`http://localhost:3000/study/${params.id}`),
       },
-    
-    
+      
+      { path: "404", element: <NotFound /> },
+      { path: "*", element: <Navigate to="/404" /> },
     ],
   },
 ]);
@@ -87,8 +82,8 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-       <RouterProvider router={router}></RouterProvider>
-  <Toaster  position="top-right" reverseOrder={false}></Toaster>
+      <RouterProvider router={router} />
+      <Toaster position="top-right" reverseOrder={false} />
     </AuthProvider>
-  </StrictMode>,
-)
+  </StrictMode>
+);

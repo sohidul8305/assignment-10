@@ -1,12 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const CreatePartnerProfile = () => {
   const { user } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setLoading(true); 
 
     const form = event.target;
 
@@ -27,6 +30,7 @@ const CreatePartnerProfile = () => {
     fetch("http://localhost:3000/study", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      
       body: JSON.stringify(formData),
     })
       .then((res) => {
@@ -41,9 +45,11 @@ const CreatePartnerProfile = () => {
       .catch((err) => {
         console.error(err);
         toast.error("Failed to create profile");
-      });
+      })
+      .finally(() => setLoading(false)); 
   };
 
+  if (loading) return <LoadingSpinner />; 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
       <h2 className="text-2xl font-semibold mb-4 text-center">
@@ -51,7 +57,7 @@ const CreatePartnerProfile = () => {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Full Name */}
+     
         <div>
           <label className="block text-sm font-medium">Full Name</label>
           <input
@@ -63,7 +69,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
-        {/* Profile Image */}
+       
         <div>
           <label className="block text-sm font-medium">Profile Image URL</label>
           <input
@@ -74,7 +80,6 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
-        {/* Subject */}
         <div>
           <label className="block text-sm font-medium">Subject</label>
           <input
@@ -85,7 +90,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
-        {/* Study Mode */}
+     
         <div>
           <label className="block text-sm font-medium">Study Mode</label>
           <select
@@ -97,7 +102,7 @@ const CreatePartnerProfile = () => {
           </select>
         </div>
 
-        {/* Availability Time */}
+    
         <div>
           <label className="block text-sm font-medium">Availability Time</label>
           <input
@@ -108,7 +113,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
-        {/* Location */}
+       
         <div>
           <label className="block text-sm font-medium">Location</label>
           <input
@@ -119,7 +124,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
-        {/* Experience Level */}
+     
         <div>
           <label className="block text-sm font-medium">Experience Level</label>
           <select
@@ -132,7 +137,7 @@ const CreatePartnerProfile = () => {
           </select>
         </div>
 
-        {/* Skills */}
+       
         <div>
           <label className="block text-sm font-medium">Skills</label>
           <input
@@ -143,7 +148,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
-        {/* Email */}
+       
         <div>
           <label className="block text-sm font-medium">Email</label>
           <input

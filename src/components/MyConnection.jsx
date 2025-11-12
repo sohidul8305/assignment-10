@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
+import LoadingSpinner from "./LoadingSpinner";
 
 const MyConnection = () => {
   const { user, loading } = useContext(AuthContext);
@@ -18,6 +19,8 @@ const MyConnection = () => {
       .then((data) => setConnections(data))
       .catch((err) => console.error("Fetch error:", err));
   }, [user, loading]);
+
+  if (loading) return <LoadingSpinner />;
 
   // Delete connection
   const handleDelete = (id) => {
@@ -75,10 +78,8 @@ const MyConnection = () => {
     setSelectedConnection(null);
   };
 
-  if (loading) return <p className="text-center mt-10">Checking login...</p>;
-
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded shadow">
+    <div className="max-w-5xl mx-auto mt-10 p-4 md:p-6 bg-white rounded shadow">
       <h2 className="text-2xl font-semibold mb-6 text-center">My Connections</h2>
 
       {connections.length === 0 ? (

@@ -1,17 +1,36 @@
-import React from 'react';
-import TopStudy from './TopStudy';
-import { data } from 'react-router';
-import HowItWorks from './HowItWorks';
-import Testimonials from './Testimonials';
-import BannerCarousel from './BannerCarousel';
+import React, { useState, useEffect } from "react";
+import TopStudy from "./TopStudy";
+import HowItWorks from "./HowItWorks";
+import Testimonials from "./Testimonials";
+import BannerCarousel from "./BannerCarousel";
+import LoadingSpinner from "../components/LoadingSpinner"; 
 
 const Home = () => {
+  const [loading, setLoading] = useState(true);
+  const [studyData, setStudyData] = useState([]);
+
+  useEffect(() => {
+  
+    fetch("http://localhost:3000/study")
+      .then((res) => res.json())
+      .then((data) => {
+        setStudyData(data); 
+        setLoading(false);  
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false); 
+      });
+  }, []);
+
+  if (loading) return <LoadingSpinner />; 
+
   return (
     <div>
-      <BannerCarousel></BannerCarousel>
-      <TopStudy data={data}></TopStudy>
-      <HowItWorks></HowItWorks>
-      <Testimonials></Testimonials>
+      <BannerCarousel />
+      <TopStudy data={studyData} />
+      <HowItWorks />
+      <Testimonials />
     </div>
   );
 };
