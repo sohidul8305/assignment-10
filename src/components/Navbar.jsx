@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { NavLink } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import { AuthContext } from "../Provider/AuthProvider";
 import { Menu, X } from "lucide-react";
 import studylogo from "../assets/studylogo.jpg";
@@ -8,19 +8,22 @@ import { FaCircleUser } from "react-icons/fa6";
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    console.log("User logged out");
+    navigate("/");
   };
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   return (
     <nav className="bg-gray-800 text-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Navbar main container */}
         <div className="flex justify-between items-center h-16">
+          {/* Logo */}
           <div className="flex items-center gap-2">
             <img
               className="h-10 w-10 rounded-full object-cover"
@@ -73,23 +76,41 @@ const Navbar = () => {
                   My Connections
                 </NavLink>
 
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm font-semibold transition"
-                >
-                  Logout
-                </button>
+                {/* Profile Dropdown */}
+                <div className="relative">
+                  <button onClick={toggleDropdown} className="focus:outline-none">
+                    <img
+                      src={user.photoURL || ""}
+                      alt="User"
+                      className="w-8 h-8 rounded-full border-2 border-blue-400 object-cover"
+                    />
+                    {!user.photoURL && <FaCircleUser className="w-8 h-8" />}
+                  </button>
 
-                <img
-                  src={
-                    user.photoURL ||
-                  <FaCircleUser />
-                  }
-                  alt="User"
-                  className="w-8 h-8 rounded-full border-2 border-blue-400"
-                />
+                  {dropdownOpen && (
+                    <ul className="absolute right-0 mt-2 w-36 bg-gray-700 rounded shadow-lg py-1">
+                      <li>
+                     <Link to="/profileuser">
+                        <button
+                          onClick={() => navigate("/profile")}
+                          className="block w-full text-left px-4 py-2 hover:bg-gray-600"
+                        >
+                          Profile
+                        </button>
+                     </Link>
+                      </li>
+                      <li>
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full text-left px-4 py-2 hover:bg-red-600"
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  )}
+                </div>
               </>
-              
             ) : (
               <>
                 <NavLink
@@ -135,7 +156,7 @@ const Navbar = () => {
 
           {user ? (
             <>
-              <NavLink to="/createprofile" onClick={() => setMenuOpen(false)}>
+              <NavLink to="/createpartnerprofile" onClick={() => setMenuOpen(false)}>
                 <li className="hover:text-teal-400">Create Profile</li>
               </NavLink>
 

@@ -18,29 +18,31 @@ const CreatePartnerProfile = () => {
       availabilityTime: form.availabilityTime.value,
       location: form.location.value,
       experienceLevel: form.experienceLevel.value,
+      skills: form.skills.value,
       email: form.email.value,
-   
-
       rating: 0,
       partnerCount: 0,
     };
-  fetch("http://localhost:3000/study", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(" Server Response:", data);
-      toast.success("Profile Created Successfully!");
-      form.reset();
+
+    fetch("http://localhost:3000/study", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
     })
-    .catch((error) => {
-      console.error(" Error:", error);
-    });
-};
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Success:", data);
+        toast.success("Profile created successfully!");
+        form.reset();
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to create profile");
+      });
+  };
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
@@ -49,6 +51,7 @@ const CreatePartnerProfile = () => {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Full Name */}
         <div>
           <label className="block text-sm font-medium">Full Name</label>
           <input
@@ -60,6 +63,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
+        {/* Profile Image */}
         <div>
           <label className="block text-sm font-medium">Profile Image URL</label>
           <input
@@ -70,6 +74,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
+        {/* Subject */}
         <div>
           <label className="block text-sm font-medium">Subject</label>
           <input
@@ -80,6 +85,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
+        {/* Study Mode */}
         <div>
           <label className="block text-sm font-medium">Study Mode</label>
           <select
@@ -91,6 +97,7 @@ const CreatePartnerProfile = () => {
           </select>
         </div>
 
+        {/* Availability Time */}
         <div>
           <label className="block text-sm font-medium">Availability Time</label>
           <input
@@ -101,6 +108,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
+        {/* Location */}
         <div>
           <label className="block text-sm font-medium">Location</label>
           <input
@@ -111,6 +119,7 @@ const CreatePartnerProfile = () => {
           />
         </div>
 
+        {/* Experience Level */}
         <div>
           <label className="block text-sm font-medium">Experience Level</label>
           <select
@@ -122,15 +131,19 @@ const CreatePartnerProfile = () => {
             <option>Expert</option>
           </select>
         </div>
+
+        {/* Skills */}
         <div>
           <label className="block text-sm font-medium">Skills</label>
           <input
             type="text"
-            names="skills"
+            name="skills"
             placeholder="e.g. Math, English, Programming"
             className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
+
+        {/* Email */}
         <div>
           <label className="block text-sm font-medium">Email</label>
           <input

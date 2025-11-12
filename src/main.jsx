@@ -15,6 +15,7 @@ import StudyCards from './components/StudyCards.jsx'
 import PartnerDetails from './components/PartnerDetaills.jsx'
 import Profileuser from './components/Profileuser.jsx'
 import CreatePartnerProfile from './components/CreatePartnerProfile.jsx'
+import MyConnection from './components/MyConnection.jsx'
 
 
 
@@ -62,6 +63,12 @@ const router = createBrowserRouter([
       {
         path: "createpartnerprofile",
         element: <CreatePartnerProfile />,
+       
+      },
+      {
+        path: "myconnections",
+        element: <MyConnection />,
+        
        
       },
       {
