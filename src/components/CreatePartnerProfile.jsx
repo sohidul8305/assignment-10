@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../components/LoadingSpinner";
+import axios from "axios";
 
 const CreatePartnerProfile = () => {
   const { user } = useContext(AuthContext);
@@ -27,27 +28,22 @@ const CreatePartnerProfile = () => {
       partnerCount: 0,
     };
 
-    fetch("http://localhost:3000/study", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      
+    axios.post("http://localhost:3000/study", {
+    
       body: JSON.stringify(formData),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Network response was not ok");
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Success:", data);
-        toast.success("Profile created successfully!");
-        form.reset();
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Failed to create profile");
-      })
-      .finally(() => setLoading(false)); 
-  };
+axios.post("http://localhost:3000/study", formData)
+  .then((res) => {
+    console.log("Success:", res.data);
+    toast.success("Profile created successfully!");
+    form.reset();
+  })
+  .catch((err) => {
+    console.error(err);
+    toast.error("Failed to create profile");
+  })
+  .finally(() => setLoading(false));
+}
 
   if (loading) return <LoadingSpinner />; 
   return (

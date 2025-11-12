@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
+import axios from "axios";
 
 const FindPartners = () => {
   const [study, setPartners] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/study")
-      .then((res) => res.json())
-      .then((data) => setPartners(data))
+    axios.get("http://localhost:3000/study")
+      .then((res) => setPartners(res.data))
       .catch((err) => console.error(err));
   }, []);
 
@@ -32,18 +32,14 @@ const FindPartners = () => {
             <p className="text-gray-600 text-center mt-2">
               ⭐ {study.rating || "N/A"}
             </p>
-
             <p className="text-sm text-gray-500 text-center mt-1">
               {Array.isArray(study.skills)
                 ? study.skills.join(", ")
                 : study.skills || "No skills"}
             </p>
-
-          
             <p className="absolute inset-x-0 bottom-14 text-center text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition">
               ID: {study._id}
             </p>
-
             <div className="text-center mt-4">
               <Link
                 to={`/partnerdetails/${study._id}`}

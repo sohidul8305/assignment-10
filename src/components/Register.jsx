@@ -13,7 +13,7 @@ import { AuthContext } from "../Provider/AuthProvider";
 const Register = () => {
   const provider = new GoogleAuthProvider();
   const navigate = useNavigate();
-  const { setUser, user } = useContext(AuthContext);
+  const { setUser,  } = useContext(AuthContext);
 
   const [nameError, setNameError] = useState("");
 
@@ -25,7 +25,7 @@ const Register = () => {
     const image = event.target.image.value;
     const password = event.target.password.value;
 
-    // Name validation
+
     if (name.length < 5) {
       setNameError("Name should be more than 5 characters");
       return;
@@ -33,7 +33,7 @@ const Register = () => {
       setNameError("");
     }
 
-    // Password validation
+   
     const uppercaseReg = /[A-Z]/;
     const lowercaseReg = /[a-z]/;
 
@@ -50,12 +50,12 @@ const Register = () => {
       return;
     }
 
-    // Create user
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const user = result.user;
 
-        // Update displayName and photoURL
+       
         updateProfile(user, { displayName: name, photoURL: image })
           .then(() => {
             setUser({ ...user, displayName: name, photoURL: image });

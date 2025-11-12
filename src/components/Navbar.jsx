@@ -23,7 +23,7 @@ const Navbar = () => {
     <nav className="bg-gray-800 text-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          
           <div className="flex items-center gap-2">
             <img
               className="h-10 w-10 rounded-full object-cover"
@@ -134,7 +134,7 @@ const Navbar = () => {
             )}
           </ul>
 
-          {/* Mobile Hamburger */}
+      
           <div className="md:hidden flex items-center">
             <button onClick={toggleMenu}>
               {menuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -143,7 +143,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+     
       {menuOpen && (
         <ul className="md:hidden bg-gray-800 px-6 py-4 space-y-3 text-lg font-semibold">
           <NavLink to="/" onClick={() => setMenuOpen(false)}>

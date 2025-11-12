@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
 import LoadingSpinner from "./LoadingSpinner";
+import axios from "axios";
 
 const MyConnection = () => {
   const { user, loading } = useContext(AuthContext);
@@ -9,7 +10,7 @@ const MyConnection = () => {
   const [selectedConnection, setSelectedConnection] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch logged-in user's connections
+
   useEffect(() => {
     if (loading) return;
     if (!user?.email) return;
@@ -22,7 +23,7 @@ const MyConnection = () => {
 
   if (loading) return <LoadingSpinner />;
 
-  // Delete connection
+ 
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this connection?")) return;
 
@@ -36,13 +37,13 @@ const MyConnection = () => {
       });
   };
 
-  // Open update modal
+
   const handleUpdate = (connection) => {
     setSelectedConnection(connection);
     setIsModalOpen(true);
   };
 
-  // Submit updated connection
+  
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -54,24 +55,25 @@ const MyConnection = () => {
       experienceLevel: form.experienceLevel.value,
     };
 
-    fetch(`http://localhost:3000/connections/${selectedConnection._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
+  axios.put(`http://localhost:3000/connections/${selectedConnection._id}`, updatedData)
+    .then((res) => {
+      if (res.data.modifiedCount > 0) {
+        toast.success("Updated successfully!");
+        setConnections((prev) =>
+          prev.map((item) =>
+            item._id === selectedConnection._id ? { ...item, ...updatedData } : item
+          )
+        );
+        setIsModalOpen(false);
+      } else {
+        toast.error("Update failed");
+      }
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.modifiedCount > 0) {
-          toast.success("Updated successfully!");
-          setConnections((prev) =>
-            prev.map((item) =>
-              item._id === selectedConnection._id ? { ...item, ...updatedData } : item
-            )
-          );
-          setIsModalOpen(false);
-        } else toast.error("Update failed");
-      });
-  };
+    .catch((err) => {
+      console.error(err);
+      toast.error("Update failed");
+    });
+};
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -128,7 +130,6 @@ const MyConnection = () => {
         </table>
       )}
 
-      {/* Update Modal */}
       {isModalOpen && selectedConnection && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
