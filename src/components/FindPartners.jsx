@@ -1,15 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+import React, { useEffect, useState, useContext } from "react";
+import { Link, useNavigate } from "react-router";
 import axios from "axios";
+import { AuthContext } from "../Provider/AuthProvider";
+import toast from "react-hot-toast";
 
 const FindPartners = () => {
   const [study, setPartners] = useState([]);
+  const { user } = useContext(AuthContext); 
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:3000/study")
+    axios
+      .get("http://localhost:3000/study")
       .then((res) => setPartners(res.data))
+   
       .catch((err) => console.error(err));
+     
   }, []);
+
+  const handleViewProfile = (id) => {
+    if (!user) {
+      navigate("/login"); 
+          toast.error("please login fast!")
+    } else {
+      navigate(`/partnerdetails/${id}`); 
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
@@ -18,35 +34,35 @@ const FindPartners = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {study.map((study) => (
+        {study.map((partner) => (
           <div
-            key={study._id}
+            key={partner._id}
             className="relative bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition-all group"
           >
             <img
-              src={study.image || "https://via.placeholder.com/150"}
-              alt={study.name}
+              src={partner.image || "https://via.placeholder.com/150"}
+              alt={partner.name}
               className="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-4 border-blue-500"
             />
-            <h3 className="text-xl font-semibold text-center">{study.name}</h3>
+            <h3 className="text-xl font-semibold text-center">{partner.name}</h3>
             <p className="text-gray-600 text-center mt-2">
-              ⭐ {study.rating || "N/A"}
+              ⭐ {partner.rating || "N/A"}
             </p>
             <p className="text-sm text-gray-500 text-center mt-1">
-              {Array.isArray(study.skills)
-                ? study.skills.join(", ")
-                : study.skills || "No skills"}
+              {Array.isArray(partner.skills)
+                ? partner.skills.join(", ")
+                : partner.skills || "No skills"}
             </p>
             <p className="absolute inset-x-0 bottom-14 text-center text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition">
-              ID: {study._id}
+              ID: {partner._id}
             </p>
             <div className="text-center mt-4">
-              <Link
-                to={`/partnerdetails/${study._id}`}
+              <button
+                onClick={() => handleViewProfile(partner._id)}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
                 View Profile
-              </Link>
+              </button>
             </div>
           </div>
         ))}
