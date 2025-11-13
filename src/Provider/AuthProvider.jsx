@@ -30,7 +30,6 @@ const AuthProvider = ({ children }) => {
       .catch((error) => console.error("Logout Error:", error));
   };
 
-  // ✅ setUser কে এখন context এ include করা হলো
   const authInfo = { user, setUser, login, logout, loading, updateuser };
 
   return (

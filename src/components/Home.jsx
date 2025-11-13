@@ -11,7 +11,7 @@ const Home = () => {
 
   useEffect(() => {
   
-    fetch("http://localhost:3000/study")
+    fetch("https://assignment-10-server-zeta-gold.vercel.app/study")
       .then((res) => res.json())
       .then((data) => {
         setStudyData(data); 

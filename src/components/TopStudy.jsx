@@ -4,7 +4,7 @@ const TopStudy = () => {
   const [partners, setPartners] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/study")
+    fetch("https://assignment-10-server-zeta-gold.vercel.app/study")
       .then((res) => res.json())
       .then((data) => setPartners(data))
       .catch((err) => console.error(err));

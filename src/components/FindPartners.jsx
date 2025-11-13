@@ -15,7 +15,7 @@ const FindPartners = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://localhost:3000/study")
+      .get("https://assignment-10-server-zeta-gold.vercel.app/study")
       .then((res) => {
         setPartners(res.data);
         setFilteredPartners(res.data);
@@ -27,7 +27,7 @@ const FindPartners = () => {
       });
   }, []);
 
-  // 🔹 View Profile
+
   const handleViewProfile = (id) => {
     if (!user) {
       navigate("/login");
@@ -37,7 +37,7 @@ const FindPartners = () => {
     }
   };
 
-  // 🔹 Send Partner Request
+
   const handleSendRequest = (id) => {
     if (!user) {
       toast.error("Please login first!");
@@ -46,11 +46,11 @@ const FindPartners = () => {
     }
 
     axios
-      .put(`http://localhost:3000/partner-request/${id}`)
+      .put(`https://assignment-10-server-zeta-gold.vercel.app/partner-request/${id}`)
       .then((res) => {
         if (res.data.success) {
           toast.success("Partner request sent!");
-          // UI update locally
+         
           setFilteredPartners((prev) =>
             prev.map((p) =>
               p._id === id ? { ...p, requestCount: (p.requestCount || 0) + 1 } : p
@@ -64,7 +64,7 @@ const FindPartners = () => {
       });
   };
 
-  // 🔹 Search
+
   const handleSearch = (event) => {
     event.preventDefault();
     const search_text = event.target.search.value.trim();
@@ -78,7 +78,7 @@ const FindPartners = () => {
 
     const encodedText = encodeURIComponent(search_text);
 
-    fetch(`http://localhost:3000/search?search=${encodedText}`)
+    fetch(`https://assignment-10-server-zeta-gold.vercel.app/search?search=${encodedText}`)
       .then((res) => {
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
         return res.json();
@@ -99,7 +99,6 @@ const FindPartners = () => {
         Find Your Study Partners
       </h2>
 
-      {/* 🔹 Search Form */}
       <div className="flex justify-center gap-2">
         <form onSubmit={handleSearch} className="mb-10 flex">
           <label className="input rounded-full mt-5 flex items-center px-3 border">
@@ -133,7 +132,6 @@ const FindPartners = () => {
         </form>
       </div>
 
-      {/* 🔹 Partners Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {(filteredPartners.length > 0 ? filteredPartners : partners).map(
           (partner) => (

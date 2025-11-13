@@ -88,7 +88,6 @@ const Navbar = () => {
                   My Connections
                 </NavLink>
 
-                {/* Profile Dropdown */}
                 <div className="relative">
                   <button onClick={toggleDropdown} className="focus:outline-none">
                     <img

@@ -28,12 +28,12 @@ const router = createBrowserRouter([
       {
         index: true, 
         element: <Home />,
-        loader: () => fetch("http://localhost:3000/study"),
+        loader: () => fetch("https://assignment-10-server-zeta-gold.vercel.app/study"),
       },
       {
         path: "findpartners",
         element: <FindPartners />,
-        loader: () => fetch('http://localhost:3000/study'),
+        loader: () => fetch('https://assignment-10-server-zeta-gold.vercel.app/study'),
       },
       {
         path: "login",
@@ -50,7 +50,7 @@ const router = createBrowserRouter([
       {
         path: "topstudy",
         element: <TopStudy />,
-        loader: ({ params }) => fetch(`http://localhost:3000/study/${params.id}`),
+        loader: ({ params }) => fetch(`https://assignment-10-server-zeta-gold.vercel.app/study${params.id}`),
       },
       {
         path: "studycards",
@@ -75,7 +75,7 @@ const router = createBrowserRouter([
       {
         path: "partnerdetails/:id",
         element: <PartnerDetails />,
-        loader: ({ params }) => fetch(`http://localhost:3000/study/${params.id}`),
+        loader: ({ params }) => fetch(`https://assignment-10-server-zeta-gold.vercel.app/study${params.id}`),
       },
       
       { path: "404", element: <NotFound /> },

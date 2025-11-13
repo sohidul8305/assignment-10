@@ -9,7 +9,7 @@ const UpdateConnection = () => {
   const [connection, setConnection] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/connections/${id}`)
+    axios.get(`https://assignment-10-server-zeta-gold.vercel.app/connections/${id}`)
       .then(res => setConnection(res.data))
       .catch(err => console.error(err));
   }, [id]);
@@ -26,7 +26,7 @@ const UpdateConnection = () => {
     };
 
   axios
-  .put(`http://localhost:3000/connections/${id}`, updatedData)
+  .put(`https://assignment-10-server-zeta-gold.vercel.app/connections/${id}`, updatedData)
   .then((res) => {
     if (res.data.modifiedCount > 0) {
       toast.success("Updated successfully!");

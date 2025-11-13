@@ -28,11 +28,11 @@ const CreatePartnerProfile = () => {
       partnerCount: 0,
     };
 
-    axios.post("http://localhost:3000/study", {
+    axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", {
     
       body: JSON.stringify(formData),
     })
-axios.post("http://localhost:3000/study", formData)
+axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
   .then((res) => {
     console.log("Success:", res.data);
     toast.success("Profile created successfully!");

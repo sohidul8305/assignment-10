@@ -20,7 +20,7 @@ const MyConnection = () => {
     if (loading) return;
     if (!user?.email) return;
 
-    fetch(`http://localhost:3000/connections?email=${user.email}`)
+    fetch(`https://assignment-10-server-zeta-gold.vercel.app/connections?email=${user.email}`)
       .then((res) => res.json())
       .then((data) => setConnections(data))
       .catch((err) => console.error("Fetch error:", err));
@@ -32,7 +32,7 @@ const MyConnection = () => {
     if (!window.confirm("Are you sure you want to delete this connection?"))
       return;
 
-    fetch(`http://localhost:3000/connections/${id}`, { method: "DELETE" })
+    fetch(`https://assignment-10-server-zeta-gold.vercel.app/connections/${id}`, { method: "DELETE" })
       .then((res) => res.json())
       .then((data) => {
         if (data.deletedCount > 0) {
@@ -56,7 +56,7 @@ const MyConnection = () => {
     };
 
      axios
-    .put(`http://localhost:3000/connections/${selectedConnection._id}`, updatedData)
+    .put(`https://assignment-10-server-zeta-gold.vercel.app/connections/${selectedConnection._id}`, updatedData)
     .then((res) => {
       if (res.data.modifiedCount > 0) {
         toast.success("Updated successfully!");
