@@ -17,7 +17,7 @@ const Login = () => {
     const email = event.target.email.value;
     const password = event.target.password.value;
 
-    // validation
+
     const uppercaseReg = /[A-Z]/;
     const lowercaseReg = /[a-z]/;
     if (!uppercaseReg.test(password)) {

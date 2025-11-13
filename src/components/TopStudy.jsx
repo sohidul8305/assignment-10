@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { useNavigate } from "react-router";
 const TopStudy = () => {
   const [partners, setPartners] = useState([]);
 
@@ -15,7 +14,7 @@ const TopStudy = () => {
   const topRated = [...partners]
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 3);
-  const navigate = useNavigate();
+ 
   if (!topRated.length) {
     return (
       <div className="text-center mt-10 text-gray-500">
@@ -60,12 +59,7 @@ const TopStudy = () => {
       
             <div className="text-center mt-4">
            <button
-  onClick={() => {
-    
-      navigate("/login"); 
-      alert("please login fast");
  
-  }}
   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
 >
   View Profile

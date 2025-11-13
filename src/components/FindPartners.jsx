@@ -3,16 +3,17 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
-import LoadingSpinner from "./LoadingSpinner";
 
 const FindPartners = () => {
-  const [partners, setPartners] = useState([]); // মূল ডেটা
-  const [filteredPartners, setFilteredPartners] = useState([]); // search results
+  const [partners, setPartners] = useState([]); 
+  const [filteredPartners, setFilteredPartners] = useState([]); 
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // 🔹 Fetch all partners
   useEffect(() => {
+    setLoading(true);
     axios
       .get("http://localhost:3000/study")
       .then((res) => {
@@ -20,13 +21,13 @@ const FindPartners = () => {
         setFilteredPartners(res.data);
         setLoading(false);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
-  // if(loading) {
-  //   return <div> <LoadingSpinner /></div>
-  // }
-  // 🔹 Handle view profile
+  // 🔹 View Profile
   const handleViewProfile = (id) => {
     if (!user) {
       navigate("/login");
@@ -36,13 +37,42 @@ const FindPartners = () => {
     }
   };
 
-  // 🔹 Handle search
+  // 🔹 Send Partner Request
+  const handleSendRequest = (id) => {
+    if (!user) {
+      toast.error("Please login first!");
+      navigate("/login");
+      return;
+    }
+
+    axios
+      .put(`http://localhost:3000/partner-request/${id}`)
+      .then((res) => {
+        if (res.data.success) {
+          toast.success("Partner request sent!");
+          // UI update locally
+          setFilteredPartners((prev) =>
+            prev.map((p) =>
+              p._id === id ? { ...p, requestCount: (p.requestCount || 0) + 1 } : p
+            )
+          );
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to send request");
+      });
+  };
+
+  // 🔹 Search
   const handleSearch = (event) => {
     event.preventDefault();
     const search_text = event.target.search.value.trim();
     setLoading(true);
+
     if (!search_text) {
-      setFilteredPartners(partners); // empty search → all partners
+      setFilteredPartners(partners);
+      setLoading(false);
       return;
     }
 
@@ -55,8 +85,12 @@ const FindPartners = () => {
       })
       .then((data) => {
         setFilteredPartners(data);
+        setLoading(false);
       })
-      .catch((err) => console.error("Fetch error:", err));
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        setLoading(false);
+      });
   };
 
   return (
@@ -89,7 +123,7 @@ const FindPartners = () => {
               name="search"
               type="search"
               required
-              placeholder="Search by subject"
+              placeholder="Search by skills"
               className="outline-none bg-transparent"
             />
           </label>
@@ -99,6 +133,7 @@ const FindPartners = () => {
         </form>
       </div>
 
+      {/* 🔹 Partners Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {(filteredPartners.length > 0 ? filteredPartners : partners).map(
           (partner) => (
@@ -108,29 +143,37 @@ const FindPartners = () => {
             >
               <img
                 src={partner.image || "https://via.placeholder.com/150"}
-                alt={partner.name}
+                alt={partner.name || "Partner"}
                 className="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-4 border-blue-500"
               />
               <h3 className="text-xl font-semibold text-center">
-                {partner.name}
+                {partner.name || "Unnamed"}
               </h3>
               <p className="text-gray-600 text-center mt-2">
-                ⭐ {partner.rating || "N/A"}
+                ⭐ {partner.rating ?? "N/A"}
               </p>
               <p className="text-sm text-gray-500 text-center mt-1">
-                {Array.isArray(partner.skills)
+                {Array.isArray(partner.skills) && partner.skills.length > 0
                   ? partner.skills.join(", ")
-                  : partner.skills || "No skills"}
+                  : "No skills"}
               </p>
               <p className="absolute inset-x-0 bottom-14 text-center text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition">
                 ID: {partner._id}
               </p>
-              <div className="text-center mt-4">
+
+              <div className="text-center mt-4 flex flex-col gap-2">
                 <button
                   onClick={() => handleViewProfile(partner._id)}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                 >
                   View Profile
+                </button>
+
+                <button
+                  onClick={() => handleSendRequest(partner._id)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                >
+                  Send Partner Request ({partner.requestCount || 0})
                 </button>
               </div>
             </div>
