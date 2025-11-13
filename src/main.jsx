@@ -18,6 +18,7 @@ import CreatePartnerProfile from './components/CreatePartnerProfile.jsx'
 import MyConnection from './components/MyConnection.jsx'
 import LoadingSpinner from './components/LoadingSpinner.jsx'
 import NotFound from './components/NotFound.jsx'
+import UpdateConnection from './components/UpdateConnection.jsx'
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+      },
+      {
+        path: "/update/:id",
+        element: <UpdateConnection />,
       },
       {
         path: "topstudy",

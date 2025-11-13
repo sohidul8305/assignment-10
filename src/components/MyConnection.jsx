@@ -3,13 +3,18 @@ import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
 import LoadingSpinner from "./LoadingSpinner";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 const MyConnection = () => {
   const { user, loading } = useContext(AuthContext);
   const [connections, setConnections] = useState([]);
   const [selectedConnection, setSelectedConnection] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
+  const handleUpdate = (connection) => {
+    navigate(`/update/${connection._id}`);
+  };
 
   useEffect(() => {
     if (loading) return;
@@ -23,9 +28,9 @@ const MyConnection = () => {
 
   if (loading) return <LoadingSpinner />;
 
- 
   const handleDelete = (id) => {
-    if (!window.confirm("Are you sure you want to delete this connection?")) return;
+    if (!window.confirm("Are you sure you want to delete this connection?"))
+      return;
 
     fetch(`http://localhost:3000/connections/${id}`, { method: "DELETE" })
       .then((res) => res.json())
@@ -38,12 +43,7 @@ const MyConnection = () => {
   };
 
 
-  const handleUpdate = (connection) => {
-    setSelectedConnection(connection);
-    setIsModalOpen(true);
-  };
 
-  
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -55,15 +55,22 @@ const MyConnection = () => {
       experienceLevel: form.experienceLevel.value,
     };
 
-  axios.put(`http://localhost:3000/connections/${selectedConnection._id}`, updatedData)
+     axios
+    .put(`http://localhost:3000/connections/${selectedConnection._id}`, updatedData)
     .then((res) => {
       if (res.data.modifiedCount > 0) {
         toast.success("Updated successfully!");
+
+    
         setConnections((prev) =>
           prev.map((item) =>
-            item._id === selectedConnection._id ? { ...item, ...updatedData } : item
+            item._id === selectedConnection._id
+              ? { ...item, ...updatedData }
+              : item
           )
         );
+
+     
         setIsModalOpen(false);
       } else {
         toast.error("Update failed");
@@ -82,7 +89,9 @@ const MyConnection = () => {
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-4 md:p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-semibold mb-6 text-center">My Connections</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-center">
+        My Connections
+      </h2>
 
       {connections.length === 0 ? (
         <p className="text-center text-gray-500">No connections found.</p>
@@ -133,7 +142,9 @@ const MyConnection = () => {
       {isModalOpen && selectedConnection && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-            <h3 className="text-xl font-semibold mb-4 text-center">Update Connection</h3>
+            <h3 className="text-xl font-semibold mb-4 text-center">
+              Update Connection
+            </h3>
             <form onSubmit={handleUpdateSubmit}>
               <div className="mb-3">
                 <label>Subject</label>
@@ -186,10 +197,17 @@ const MyConnection = () => {
               </div>
 
               <div className="flex justify-between mt-4">
-                <button type="button" onClick={closeModal} className="bg-gray-400 text-white px-4 py-2 rounded">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="bg-gray-400 text-white px-4 py-2 rounded"
+                >
                   Cancel
                 </button>
-                <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-4 py-2 rounded"
+                >
                   Save Changes
                 </button>
               </div>
