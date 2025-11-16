@@ -1,49 +1,48 @@
-import React from "react";
-import { useLoaderData } from "react-router";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 const PartnerDetails = () => {
+  const { id } = useParams();
+  const [partner, setPartner] = useState(null);
 
-  const data = useLoaderData();
-  const study = data.result || data; 
+  useEffect(() => {
+    fetch(`https://assignment-10-server-zeta-gold.vercel.app/study/${id}`)
+      .then((res) => res.json())
+      .then((data) => setPartner(data))
+      .catch((err) => console.error(err));
+  }, [id]);
 
-  if (!study) {
-    return (
-      <div className="text-center text-red-500 mt-10">
-        No partner data found!
-      </div>
-    );
+  if (!partner) {
+    return <p className="text-center mt-10 text-gray-600">Loading...</p>;
   }
 
- 
-  const { name, image, skills, rating, email, bio, country } = study;
-
   return (
-    <div className="max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-2xl p-6">
-      <div className="flex flex-col items-center text-center">
-        <img
-          src={image || "https://via.placeholder.com/150"}
-          alt={name}
-          className="w-40 h-40 rounded-full object-cover mb-4 border-4 border-blue-500"
-        />
-        <h2 className="text-3xl font-bold mb-2">{name}</h2>
-        <p className="text-gray-600 mb-4">⭐ Rating: {rating || "N/A"}</p>
-      </div>
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow">
+      <img
+        src={partner.image}
+        alt={partner.name}
+        className="w-40 h-40 mx-auto rounded-full border-4 border-blue-500 object-cover"
+      />
 
-      <div className="border-t pt-4 space-y-2 text-left">
-        <p>
-          <strong>Email:</strong> {email || "No bio available"}
-        </p>
-        <p>
-          <strong>Skills:</strong>{" "}
-          {Array.isArray(skills) ? skills.join(", ") : skills || "No skills listed"}
-        </p>
-        <p>
-          <strong>Bio:</strong> {bio || "No bio available"}
-        </p>
-        <p>
-          <strong>Country:</strong> {country || "Bangladesh"}
-        </p>
-      </div>
+      <h1 className="text-3xl font-bold text-center mt-4">{partner.name}</h1>
+
+      <p className="text-center text-gray-600 mt-2">⭐ Rating: {partner.rating}</p>
+
+      <p className="mt-4">
+        <strong>Skills:</strong> {Array.isArray(partner.skills) ? partner.skills.join(", ") : partner.skills}
+      </p>
+
+      <p className="mt-2">
+        <strong>Email:</strong> {partner.email || "Not Available"}
+      </p>
+
+      <p className="mt-2">
+        <strong>Location:</strong> {partner.location || "Unknown"}
+      </p>
+
+      <p className="mt-4">
+        <strong>About:</strong> {partner.about || "No description available"}
+      </p>
     </div>
   );
 };

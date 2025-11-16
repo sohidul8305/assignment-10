@@ -19,6 +19,7 @@ import MyConnection from './components/MyConnection.jsx'
 import LoadingSpinner from './components/LoadingSpinner.jsx'
 import NotFound from './components/NotFound.jsx'
 import UpdateConnection from './components/UpdateConnection.jsx'
+import Partnersdetails from './components/Partnersdetails.jsx'
 
 const router = createBrowserRouter([
   {
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
         element: <StudyCards />,
       },
       {
-        path: "profileuser",
+        path: "/profileuser/:id",
         element: <Profileuser />,
       },
       {
@@ -73,10 +74,15 @@ const router = createBrowserRouter([
         element: <LoadingSpinner />,
       },
       {
-        path: "partnerdetails/:id",
-        element: <PartnerDetails />,
-        loader: ({ params }) => fetch(`https://assignment-10-server-zeta-gold.vercel.app/study${params.id}`),
+        path: "/partnerdetails/:id",
+        element: <Partnersdetails />,
       },
+{
+  path: "partnerdetails/:id",
+  element: <PartnerDetails />,
+  loader: ({ params }) =>
+    fetch(`https://assignment-10-server-zeta-gold.vercel.app/study/${params.id}`),
+},
       
       { path: "404", element: <NotFound /> },
       { path: "*", element: <Navigate to="/404" /> },
