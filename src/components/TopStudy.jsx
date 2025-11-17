@@ -9,7 +9,7 @@ const TopStudy = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("https://assignment-10-server-zeta-gold.vercel.app/study")
+    fetch("http://localhost:3000/study")
       .then((res) => res.json())
       .then((data) => setPartners(data))
       .catch((err) => console.error(err));

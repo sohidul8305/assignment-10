@@ -9,9 +9,10 @@ const UpdateConnection = () => {
   const [connection, setConnection] = useState(null);
 
   useEffect(() => {
-    axios.get(`https://assignment-10-server-zeta-gold.vercel.app/connections/${id}`)
-      .then(res => setConnection(res.data))
-      .catch(err => console.error(err));
+    axios
+      .get(`https://assignment-10-server-zeta-gold.vercel.app/study/${id}`)
+      .then((res) => setConnection(res.data))
+      .catch((err) => console.error(err));
   }, [id]);
 
   const handleSubmit = (e) => {
@@ -25,29 +26,31 @@ const UpdateConnection = () => {
       experienceLevel: form.experienceLevel.value,
     };
 
-  axios
-  .put(`https://assignment-10-server-zeta-gold.vercel.app/connections/${id}`, updatedData)
-  .then((res) => {
-    if (res.data.modifiedCount > 0) {
-      toast.success("Updated successfully!");
-      // ✅ Redirect করবে না
-      // শুধু Success দেখাবে, পেজ এখানেই থাকবে
-    } else {
-      toast.error("Update failed!");
-    }
-  })
-  .catch((err) => {
-    console.error(err);
-    toast.error("Something went wrong!");
-  });
-
+    axios
+      .put(
+        `https://assignment-10-server-zeta-gold.vercel.app/study/${id}`,
+        updatedData
+      )
+      .then((res) => {
+        if (res.data.modifiedCount > 0) {
+          toast.success("Updated successfully!");
+        } else {
+          toast.error("Update failed!");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Something went wrong!");
+      });
   };
 
   if (!connection) return <p className="text-center mt-10">Loading...</p>;
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Update Connection</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-center">
+        Update Connection
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label>Subject</label>

@@ -7,7 +7,7 @@ const PartnerDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://assignment-10-server-zeta-gold.vercel.app/study`)
+    fetch(`http://localhost:3000/study`)
       .then((res) => res.json())
       .then((data) => {
         const selectedPartner = data.find((p) => p._id === id);

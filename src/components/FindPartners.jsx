@@ -17,7 +17,7 @@ const FindPartners = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("https://assignment-10-server-zeta-gold.vercel.app/study")
+      .get("http://localhost:3000/study")
       .then((res) => {
         setPartners(res.data);
         setFilteredPartners(res.data);
@@ -46,7 +46,7 @@ const FindPartners = () => {
     }
 
     axios
-      .put(`https://assignment-10-server-zeta-gold.vercel.app/partner-request/${id}`)
+      .put(`http://localhost:3000/study/${id}`)
       .then((res) => {
         if (res.data.success) {
           toast.success("Partner request sent!");

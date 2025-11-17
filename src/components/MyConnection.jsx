@@ -20,7 +20,9 @@ const MyConnection = () => {
     if (loading) return;
     if (!user?.email) return;
 
-    fetch(`https://assignment-10-server-zeta-gold.vercel.app/connections?email=${user.email}`)
+    fetch(
+      `https://assignment-10-server-zeta-gold.vercel.app/study/connections?email=${user.email}`
+    )
       .then((res) => res.json())
       .then((data) => setConnections(data))
       .catch((err) => console.error("Fetch error:", err));
@@ -32,7 +34,9 @@ const MyConnection = () => {
     if (!window.confirm("Are you sure you want to delete this connection?"))
       return;
 
-    fetch(`https://assignment-10-server-zeta-gold.vercel.app/connections/${id}`, { method: "DELETE" })
+    fetch(`https://assignment-10-server-zeta-gold.vercel.app/study/${id}`, {
+      method: "DELETE",
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.deletedCount > 0) {
@@ -41,8 +45,6 @@ const MyConnection = () => {
         } else toast.error("Delete failed");
       });
   };
-
-
 
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
@@ -55,32 +57,33 @@ const MyConnection = () => {
       experienceLevel: form.experienceLevel.value,
     };
 
-     axios
-    .put(`https://assignment-10-server-zeta-gold.vercel.app/connections/${selectedConnection._id}`, updatedData)
-    .then((res) => {
-      if (res.data.modifiedCount > 0) {
-        toast.success("Updated successfully!");
+    axios
+      .put(
+        `https://assignment-10-server-zeta-gold.vercel.app/study${selectedConnection._id}`,
+        updatedData
+      )
+      .then((res) => {
+        if (res.data.modifiedCount > 0) {
+          toast.success("Updated successfully!");
 
-    
-        setConnections((prev) =>
-          prev.map((item) =>
-            item._id === selectedConnection._id
-              ? { ...item, ...updatedData }
-              : item
-          )
-        );
+          setConnections((prev) =>
+            prev.map((item) =>
+              item._id === selectedConnection._id
+                ? { ...item, ...updatedData }
+                : item
+            )
+          );
 
-     
-        setIsModalOpen(false);
-      } else {
+          setIsModalOpen(false);
+        } else {
+          toast.error("Update failed");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
         toast.error("Update failed");
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      toast.error("Update failed");
-    });
-};
+      });
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);

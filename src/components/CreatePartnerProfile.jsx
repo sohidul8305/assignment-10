@@ -10,7 +10,7 @@ const CreatePartnerProfile = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     const form = event.target;
 
@@ -29,23 +29,23 @@ const CreatePartnerProfile = () => {
     };
 
     axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", {
-    
       body: JSON.stringify(formData),
-    })
-axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
-  .then((res) => {
-    console.log("Success:", res.data);
-    toast.success("Profile created successfully!");
-    form.reset();
-  })
-  .catch((err) => {
-    console.error(err);
-    toast.error("Failed to create profile");
-  })
-  .finally(() => setLoading(false));
-}
+    });
+    axios
+      .post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
+      .then((res) => {
+        console.log("Success:", res.data);
+        toast.success("Profile created successfully!");
+        form.reset();
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to create profile");
+      })
+      .finally(() => setLoading(false));
+  };
 
-  if (loading) return <LoadingSpinner />; 
+  if (loading) return <LoadingSpinner />;
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
       <h2 className="text-2xl font-semibold mb-4 text-center">
@@ -53,7 +53,6 @@ axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-     
         <div>
           <label className="block text-sm font-medium">Full Name</label>
           <input
@@ -65,7 +64,6 @@ axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
           />
         </div>
 
-       
         <div>
           <label className="block text-sm font-medium">Profile Image URL</label>
           <input
@@ -86,7 +84,6 @@ axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
           />
         </div>
 
-     
         <div>
           <label className="block text-sm font-medium">Study Mode</label>
           <select
@@ -98,7 +95,6 @@ axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
           </select>
         </div>
 
-    
         <div>
           <label className="block text-sm font-medium">Availability Time</label>
           <input
@@ -109,7 +105,6 @@ axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
           />
         </div>
 
-       
         <div>
           <label className="block text-sm font-medium">Location</label>
           <input
@@ -120,7 +115,6 @@ axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
           />
         </div>
 
-     
         <div>
           <label className="block text-sm font-medium">Experience Level</label>
           <select
@@ -133,7 +127,6 @@ axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
           </select>
         </div>
 
-       
         <div>
           <label className="block text-sm font-medium">Skills</label>
           <input
@@ -144,7 +137,6 @@ axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
           />
         </div>
 
-       
         <div>
           <label className="block text-sm font-medium">Email</label>
           <input
