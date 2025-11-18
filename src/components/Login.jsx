@@ -1,10 +1,14 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router'; 
-import {  signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase/firebase.config';
-import { Eye, EyeOff } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { AuthContext } from '../Provider/AuthProvider';
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../firebase/firebase.config";
+import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +20,6 @@ const Login = () => {
     event.preventDefault();
     const email = event.target.email.value;
     const password = event.target.password.value;
-
 
     const uppercaseReg = /[A-Z]/;
     const lowercaseReg = /[a-z]/;
@@ -33,18 +36,19 @@ const Login = () => {
       return;
     }
 
-
-   signInWithEmailAndPassword(auth, email, password)
-      .then(result => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((result) => {
         const userData = {
           email: result.user.email,
-          photoURL: result.user.photoURL || "https://i.ibb.co/YpJ2zH8/default-avatar.png"
+          photoURL:
+            result.user.photoURL ||
+            "https://i.ibb.co/YpJ2zH8/default-avatar.png",
         };
         login(userData);
         toast.success("Login successful!");
-        navigate('/');
+        navigate("/");
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error.message);
         toast.error("Login failed. Maybe email already used?");
       });
@@ -52,16 +56,18 @@ const Login = () => {
 
   const handleGoogleLogin = () => {
     signInWithPopup(auth, provider)
-      .then(result => {
+      .then((result) => {
         const userData = {
           email: result.user.email,
-          photoURL: result.user.photoURL || "https://i.ibb.co/YpJ2zH8/default-avatar.png"
+          photoURL:
+            result.user.photoURL ||
+            "https://i.ibb.co/YpJ2zH8/default-avatar.png",
         };
         login(userData);
         toast.success("Google Login successful!");
-        navigate('/');
+        navigate("/");
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error.message);
         toast.error("Google login failed");
       });
@@ -71,21 +77,33 @@ const Login = () => {
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="card bg-blue-400 w-full max-w-md shadow-2xl p-10">
-          <h1 className="text-3xl font-bold text-center text-white">Login now!</h1>
+          <h1 className="text-3xl font-bold text-center text-white">
+            Login now!
+          </h1>
 
           <div className="card-body">
             <form onSubmit={handleLogin}>
               <fieldset className="fieldset space-y-2">
-                <label className="label text-white">Email</label>
-                <input type="email" className="input" name="email" placeholder="Email" required />
+                <label className="label text-white" autoComplete="off">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="input w-full"
+                  name="email"
+                  placeholder="Email"
+                  autoComplete="off"
+                  required
+                />
 
                 <label className="label text-white">Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="input w-full pr-10"
+                    className="input w-full pr-14"
                     name="password"
-                    placeholder="Password"
+                    autoComplete="new-password"
+                    placeholder="password"
                     required
                   />
                   <button
@@ -95,10 +113,11 @@ const Login = () => {
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
-                
                 </div>
 
-                <div><a className="link link-hover text-white">Forgot password?</a></div>
+                <div>
+                  <a className="link link-hover text-white">Forgot password?</a>
+                </div>
                 <button className="btn btn-warning mt-4 w-full">Login</button>
               </fieldset>
             </form>
@@ -107,13 +126,31 @@ const Login = () => {
               onClick={handleGoogleLogin}
               className="btn bg-white text-black border-[#e5e5e5] w-full mt-3 flex items-center justify-center"
             >
-              <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="mr-2">
+              <svg
+                width="16"
+                height="16"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="mr-2"
+              >
                 <g>
                   <path d="m0 0H512V512H0" fill="#fff"></path>
-                  <path fill="#34a853" d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"></path>
-                  <path fill="#4285f4" d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"></path>
-                  <path fill="#fbbc02" d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"></path>
-                  <path fill="#ea4335" d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"></path>
+                  <path
+                    fill="#34a853"
+                    d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
+                  ></path>
+                  <path
+                    fill="#4285f4"
+                    d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
+                  ></path>
+                  <path
+                    fill="#fbbc02"
+                    d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
+                  ></path>
+                  <path
+                    fill="#ea4335"
+                    d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
+                  ></path>
                 </g>
               </svg>
               Login with Google
@@ -121,7 +158,10 @@ const Login = () => {
 
             <div className="flex gap-2 justify-center mt-4 text-white">
               <p>Don’t have an account? please</p>
-              <Link to="/register" className="text-blue-900 font-semibold underline hover:text-blue-700">
+              <Link
+                to="/register"
+                className="text-blue-900 font-semibold underline hover:text-blue-700"
+              >
                 Register
               </Link>
             </div>
