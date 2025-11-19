@@ -1,20 +1,35 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../components/LoadingSpinner";
 import axios from "axios";
 
-const CreatePartnerProfile = () => {
+const API_BASE = "https://assignment-10-server-zeta-gold.vercel.app";
+
+const CreatePartnerProfile = ({ partnerId }) => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [initialData, setInitialData] = useState({});
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  // Fetch data if partnerId exists (update mode)
+  useEffect(() => {
+    if (!partnerId) return;
+
+    setLoading(true);
+    axios
+      .get(`${API_BASE}/study/${partnerId}`)
+      .then((res) => setInitialData(res.data))
+      .catch(() => toast.error("Failed to load profile"))
+      .finally(() => setLoading(false));
+  }, [partnerId]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
 
-    const form = event.target;
+    const form = e.target;
 
-    const formData = {
+    const data = {
       name: form.name.value,
       profileimage: form.profileimage.value,
       subject: form.subject.value,
@@ -23,136 +38,116 @@ const CreatePartnerProfile = () => {
       location: form.location.value,
       experienceLevel: form.experienceLevel.value,
       skills: form.skills.value,
-      email: form.email.value,
-      rating: 0,
-      partnerCount: 0,
+      email: user?.email,
     };
 
-    axios.post("https://assignment-10-server-zeta-gold.vercel.app/study", {
-      body: JSON.stringify(formData),
-    });
-    axios
-      .post("https://assignment-10-server-zeta-gold.vercel.app/study", formData)
-      .then((res) => {
-        console.log("Success:", res.data);
-        toast.success("Profile created successfully!");
+    try {
+      if (partnerId) {
+        await axios.put(`${API_BASE}/study/${partnerId}`, data);
+        toast.success("Profile updated!");
+      } else {
+        await axios.post(`${API_BASE}/study`, data);
+        toast.success("Profile created!");
         form.reset();
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Failed to create profile");
-      })
-      .finally(() => setLoading(false));
+      }
+    } catch {
+      toast.error("Failed to save");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) return <LoadingSpinner />;
+
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
-      <h2 className="text-2xl font-semibold mb-4 text-center">
-        Create Partner Profile
+    <div className="max-w-md mx-auto p-5 bg-white shadow rounded">
+      <h2 className="text-xl font-semibold mb-4 text-center">
+        {partnerId ? "Update Profile" : "Create Profile"}
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Full Name</label>
-          <input
-            type="text"
-            name="name"
-            placeholder="Enter full name"
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-3">
 
-        <div>
-          <label className="block text-sm font-medium">Profile Image URL</label>
-          <input
-            type="url"
-            name="profileimage"
-            placeholder="https://example.com/photo.jpg"
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          defaultValue={initialData.name}
+          className="w-full p-2 border rounded"
+          required
+        />
 
-        <div>
-          <label className="block text-sm font-medium">Subject</label>
-          <input
-            type="text"
-            name="subject"
-            placeholder="e.g. Mathematics"
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+        <input
+          type="url"
+          name="profileimage"
+          placeholder="Photo URL"
+          defaultValue={initialData.profileimage}
+          className="w-full p-2 border rounded"
+        />
 
-        <div>
-          <label className="block text-sm font-medium">Study Mode</label>
-          <select
-            name="studyMode"
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            <option>Online</option>
-            <option>Offline</option>
-          </select>
-        </div>
+        <input
+          type="text"
+          name="subject"
+          placeholder="Subject"
+          defaultValue={initialData.subject}
+          className="w-full p-2 border rounded"
+        />
 
-        <div>
-          <label className="block text-sm font-medium">Availability Time</label>
-          <input
-            type="text"
-            name="availabilityTime"
-            placeholder="e.g. Evening 6–9 PM"
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+        <select
+          name="studyMode"
+          defaultValue={initialData.studyMode || "Online"}
+          className="w-full p-2 border rounded"
+        >
+          <option>Online</option>
+          <option>Offline</option>
+        </select>
 
-        <div>
-          <label className="block text-sm font-medium">Location</label>
-          <input
-            type="text"
-            name="location"
-            placeholder="City/Area"
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+        <input
+          type="text"
+          name="availabilityTime"
+          placeholder="Availability Time"
+          defaultValue={initialData.availabilityTime}
+          className="w-full p-2 border rounded"
+        />
 
-        <div>
-          <label className="block text-sm font-medium">Experience Level</label>
-          <select
-            name="experienceLevel"
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            <option>Beginner</option>
-            <option>Intermediate</option>
-            <option>Expert</option>
-          </select>
-        </div>
+        <input
+          type="text"
+          name="location"
+          placeholder="Location"
+          defaultValue={initialData.location}
+          className="w-full p-2 border rounded"
+        />
 
-        <div>
-          <label className="block text-sm font-medium">Skills</label>
-          <input
-            type="text"
-            name="skills"
-            placeholder="e.g. Math, English, Programming"
-            className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+        <select
+          name="experienceLevel"
+          defaultValue={initialData.experienceLevel || "Beginner"}
+          className="w-full p-2 border rounded"
+        >
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Expert</option>
+        </select>
 
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={user?.email || ""}
-            readOnly
-            className="w-full mt-1 p-2 border rounded-md bg-gray-100"
-          />
-        </div>
+        <input
+          type="text"
+          name="skills"
+          placeholder="Skills"
+          defaultValue={initialData.skills}
+          className="w-full p-2 border rounded"
+        />
+
+        <input
+          type="email"
+          name="email"
+          value={user?.email || ""}
+          readOnly
+          className="w-full p-2 border bg-gray-100 rounded"
+        />
 
         <button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-colors"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded"
         >
-          Create Profile
+          {partnerId ? "Save Changes" : "Create"}
         </button>
       </form>
     </div>

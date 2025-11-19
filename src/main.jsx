@@ -21,6 +21,7 @@ import NotFound from './components/NotFound.jsx'
 import UpdateConnection from './components/UpdateConnection.jsx'
 import Partnersdetails from './components/Partnersdetails.jsx'
 import TopDetails from './components/Topdetails.jsx'
+// import UpdateModal from './components/UpdateModal.jsx'
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
         path: "myconnections",
         element: <MyConnection />,
       },
+      // {
+      //   path: "updatemodel",
+      //   element: <UpdateModal />,
+      // },
       {
         path: "topdetails",
         element: <TopDetails />,

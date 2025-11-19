@@ -17,7 +17,18 @@ const FindPartners = () => {
     setLoading(true);
     axios
       .get("http://localhost:3000/study")
-      .then((res) => setPartners(res.data))
+      .then((res) => {
+        // normalize subject to always be array
+        const normalized = res.data.map(p => ({
+          ...p,
+          subject: Array.isArray(p.subject)
+            ? p.subject
+            : p.subject
+            ? [p.subject]
+            : [],
+        }));
+        setPartners(normalized);
+      })
       .catch(() => toast.error("Failed to fetch partners"))
       .finally(() => setLoading(false));
   }, []);
@@ -34,12 +45,16 @@ const FindPartners = () => {
 
   // Search + Sort
   const filteredPartners = partners
-    // .filter((study) => study.subject?.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter((p) =>
+      p.subject.some((s) =>
+        s.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    )
     .sort((a, b) => {
       const levels = { Beginner: 1, Intermediate: 2, Expert: 3 };
       return sortOrder === "asc"
-        ? levels[a.experienceLevel] - levels[b.experienceLevel]
-        : levels[b.experienceLevel] - levels[a.experienceLevel];
+        ? (levels[a.experienceLevel] || 0) - (levels[b.experienceLevel] || 0)
+        : (levels[b.experienceLevel] || 0) - (levels[a.experienceLevel] || 0);
     });
 
   return (
@@ -72,46 +87,49 @@ const FindPartners = () => {
 
       {/* Partners Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredPartners.map((partner) => (
-          <div
-            key={partner._id}
-            className="bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition"
-          >
-            <img
-              src={partner.profileimage || partner.image || "https://via.placeholder.com/150"}
-              alt={partner.name}
-              className="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-4 border-blue-500"
-            />
+        {filteredPartners.length > 0 ? (
+          filteredPartners.map((partner) => (
+            <div
+              key={partner._id}
+              className="bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition"
+            >
+              <img
+                src={partner.profileimage || partner.image || "https://via.placeholder.com/150"}
+                alt={partner.name}
+                className="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-4 border-blue-500"
+              />
 
-            <h3 className="text-xl font-semibold text-center mb-2">{partner.name}</h3>
+              <h3 className="text-xl font-semibold text-center mb-2">{partner.name}</h3>
 
-            <p className="text-center text-gray-600">
-              <strong>Subject:</strong> {partner.subject}
-            </p>
+              <p className="text-center text-gray-600">
+                <strong>Subject:</strong> {partner.subject.join(", ")}
+              </p>
 
-            <p className="text-center text-gray-600">
-              <strong>Study Mode:</strong> {partner.studyMode}
-            </p>
+              <p className="text-center text-gray-600">
+                <strong>Study Mode:</strong> {partner.studyMode}
+              </p>
 
-            <p className="text-center text-gray-600">
-              <strong>Experience Level:</strong> {partner.experienceLevel}
-            </p>
+              <p className="text-center text-gray-600">
+                <strong>Experience Level:</strong> {partner.experienceLevel}
+              </p>
 
-            {/* 🔥 Partner Count Show */}
-            <p className="text-center text-gray-600">
-              <strong>Partners:</strong> {partner.partnerCount || 0}
-            </p>
+              <p className="text-center text-gray-600">
+                <strong>Partners:</strong> {partner.partnerCount || 0}
+              </p>
 
-            <div className="text-center mt-4">
-              <button
-                onClick={() => handleViewProfile(partner._id)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              >
-                View Profile
-              </button>
+              <div className="text-center mt-4">
+                <button
+                  onClick={() => handleViewProfile(partner._id)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                >
+                  View Profile
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-500">No partners found.</p>
+        )}
       </div>
     </div>
   );
