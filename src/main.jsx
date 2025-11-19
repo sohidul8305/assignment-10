@@ -20,6 +20,7 @@ import LoadingSpinner from './components/LoadingSpinner.jsx'
 import NotFound from './components/NotFound.jsx'
 import UpdateConnection from './components/UpdateConnection.jsx'
 import Partnersdetails from './components/Partnersdetails.jsx'
+import TopDetails from './components/Topdetails.jsx'
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: "myconnections",
         element: <MyConnection />,
+      },
+      {
+        path: "topdetails",
+        element: <TopDetails />,
       },
       {
         path: "loadingspinner",

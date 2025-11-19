@@ -34,7 +34,7 @@ const FindPartners = () => {
 
   // Search + Sort
   const filteredPartners = partners
-    .filter((p) => p.subject?.toLowerCase().includes(searchTerm.toLowerCase()))
+    // .filter((study) => study.subject?.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => {
       const levels = { Beginner: 1, Intermediate: 2, Expert: 3 };
       return sortOrder === "asc"

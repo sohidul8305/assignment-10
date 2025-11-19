@@ -4,30 +4,30 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../Provider/AuthProvider";
 
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://assignment-10-server-zeta-gold.vercel.app";
 
 const PartnerDetails = () => {
   const { id } = useParams();
-  const [partner, setPartner] = useState(null);
+  const [study, setStudy] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Fetch partner details
+  // Load Single Study Partner
   useEffect(() => {
     axios
       .get(`${API_BASE}/study/${id}`)
       .then((res) => {
-        setPartner(res.data);
+        setStudy(res.data);
         setLoading(false);
       })
       .catch(() => {
-        toast.error("Failed to load partner details");
+        toast.error("Failed to load details");
         setLoading(false);
       });
   }, [id]);
 
-  // Send Partner Request
   const handleSendRequest = () => {
     if (!user) {
       toast.error("Please login first!");
@@ -38,14 +38,12 @@ const PartnerDetails = () => {
     axios
       .post(`${API_BASE}/partnerRequests`, {
         senderId: user.uid,
-        receiverId: partner._id,
-        status: "pending",
-        createdAt: new Date(),
+        receiverId: study._id,
       })
       .then(() => {
-        toast.success("Partner request sent!");
-        // UI update: partnerCount +1
-        setPartner((prev) => ({
+        toast.success("Partner Request Sent!");
+
+        setStudy((prev) => ({
           ...prev,
           partnerCount: (prev.partnerCount || 0) + 1,
         }));
@@ -54,32 +52,58 @@ const PartnerDetails = () => {
   };
 
   if (loading) return <p className="text-center mt-10">Loading...</p>;
-  if (!partner) return <p className="text-center mt-10">Partner not found</p>;
+  if (!study) return <p className="text-center mt-10">Partner not found</p>;
+
+  // UNIVERSAL SAFE FIELDS (MAIN FIX)
+  const name = study.name || study.fullName || "Unknown";
+  const image =
+    study.profileimage || study.image || "https://via.placeholder.com/150";
+  const rating = study.rating || study.rate || "N/A";
+
+  const subjects =
+    study.subject ||
+    study.subjects ||
+    study.skills ||
+    study.skill ||
+    "N/A";
+
+  const studyMode = study.studyMode || study.mode || "N/A";
+
+  const availability =
+    study.availability ||
+    study.availabilityTime ||
+    study.time ||
+    "N/A";
+
+  const experience =
+    study.experienceLevel ||
+    study.experience ||
+    study.level ||
+    "N/A";
+
+  const partnerCount =
+    study.partnerCount || study.count || study.totalPartners || 0;
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow">
-      {/* Profile Image */}
       <img
-        src={partner.image || partner.profileimage || "https://via.placeholder.com/150"}
-        alt={partner.name}
+        src={image}
+        alt={name}
         className="w-40 h-40 mx-auto rounded-full border-4 border-blue-500 object-cover"
       />
 
-      {/* Name & Rating */}
-      <h1 className="text-3xl font-bold text-center mt-4">{partner.name}</h1>
-      <p className="text-center text-gray-600 mt-2">⭐ {partner.rating || "N/A"}</p>
+      <h1 className="text-3xl font-bold text-center mt-4">{name}</h1>
+      <p className="text-center text-gray-600 mt-2">⭐ {rating}</p>
 
-      {/* Partner Info */}
       <div className="mt-4 space-y-2 text-gray-700">
-        <p><strong>Subject:</strong> {partner.subject || "N/A"}</p>
-        <p><strong>Study Mode:</strong> {partner.studyMode || "N/A"}</p>
-        <p><strong>Availability:</strong> {partner.availability || "N/A"}</p>
-        <p><strong>Location:</strong> {partner.location || "N/A"}</p>
-        <p><strong>Experience Level:</strong> {partner.experienceLevel || "N/A"}</p>
-        <p><strong>Partner Count:</strong> {partner.partnerCount || 0}</p>
+        <p><strong>Subject:</strong> {subjects}</p>
+        <p><strong>Study Mode:</strong> {studyMode}</p>
+        <p><strong>Availability:</strong> {availability}</p>
+        <p><strong>Location:</strong> {study.location || "N/A"}</p>
+        <p><strong>Experience Level:</strong> {experience}</p>
+        <p><strong>Partner Count:</strong> {partnerCount}</p>
       </div>
 
-      {/* Send Partner Request Button */}
       <button
         onClick={handleSendRequest}
         className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition"

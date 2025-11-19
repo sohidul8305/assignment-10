@@ -9,13 +9,13 @@ const MyConnection = () => {
   const [selectedConnection, setSelectedConnection] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch data
+  // Fetch logged in user's partner requests
   useEffect(() => {
     if (loading) return;
     if (!user?.email) return;
 
     fetch(
-      `https://assignment-10-server-zeta-gold.vercel.app/study/connections?email=${user.email}`
+      `https://assignment-10-server-zeta-gold.vercel.app/partnerRequests?email=${user.email}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -26,30 +26,29 @@ const MyConnection = () => {
 
   if (loading) return <LoadingSpinner />;
 
-  // Open modal
-  const handleUpdate = (connection) => {
-    setSelectedConnection(connection);
+  // OPEN UPDATE MODAL
+  const handleUpdate = (con) => {
+    setSelectedConnection(con);
     setIsModalOpen(true);
   };
 
-  // Delete
+  // DELETE PARTNER REQUEST
   const handleDelete = (id) => {
-    if (!window.confirm("Are you sure you want to delete this connection?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this request?")) return;
 
-    fetch(`https://assignment-10-server-zeta-gold.vercel.app/study/${id}`, {
+    fetch(`https://assignment-10-server-zeta-gold.vercel.app/partnerRequests/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.deletedCount > 0) {
-          toast.success("Deleted successfully!");
+          toast.success("Request deleted!");
           setConnections((prev) => prev.filter((item) => item._id !== id));
-        } else toast.error("Delete failed");
+        }
       });
   };
 
-  // Update submit
+  // UPDATE REQUEST SUBMIT
   const handleUpdateSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -63,10 +62,12 @@ const MyConnection = () => {
     };
 
     fetch(
-      `https://assignment-10-server-zeta-gold.vercel.app/study/${selectedConnection._id}`,
+      `https://assignment-10-server-zeta-gold.vercel.app/partnerRequests/${selectedConnection._id}`,
       {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(updatedData),
       }
     )
@@ -75,7 +76,7 @@ const MyConnection = () => {
         if (data.modifiedCount > 0) {
           toast.success("Updated successfully!");
 
-          // Update UI
+          // update UI instantly
           setConnections((prev) =>
             prev.map((item) =>
               item._id === selectedConnection._id
@@ -86,59 +87,50 @@ const MyConnection = () => {
 
           setIsModalOpen(false);
           setSelectedConnection(null);
-        } else {
-          toast.error("Update failed");
         }
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Update failed");
       });
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedConnection(null);
-  };
-
   return (
-    <div className="max-w-5xl mx-auto mt-10 p-4 md:p-6 bg-white rounded shadow">
+    <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded shadow">
       <h2 className="text-2xl font-semibold mb-6 text-center">My Connections</h2>
 
-      {connections.length > 0 ? (
+      {connections.length ? (
         <table className="table-auto w-full border">
           <thead>
             <tr className="bg-gray-200">
-              <th className="p-2 border">Profile</th>
-              <th className="p-2 border">Name</th>
+              <th className="p-2 border">Image</th>
+              <th className="p-2 border">Partner Name</th>
               <th className="p-2 border">Subject</th>
               <th className="p-2 border">Study Mode</th>
               <th className="p-2 border">Actions</th>
             </tr>
           </thead>
+
           <tbody>
-            {connections.map((study) => (
-              <tr key={study._id} className="text-center">
+            {connections.map((item) => (
+              <tr key={item._id} className="text-center">
                 <td className="p-2 border">
                   <img
-                    src={study.profileimage || study.image}
-                    alt={study.name}
-                    className="w-12 h-12 rounded-full mx-auto"
+                    src={item.partnerImage || "https://via.placeholder.com/100"}
+                    className="w-12 h-12 rounded-full mx-auto border"
                   />
                 </td>
-                <td className="p-2 border">{study.name}</td>
-                <td className="p-2 border">{study.subject}</td>
-                <td className="p-2 border">{study.studyMode}</td>
+
+                <td className="p-2 border">{item.partnerName}</td>
+                <td className="p-2 border">{item.subject}</td>
+                <td className="p-2 border">{item.studyMode}</td>
+
                 <td className="p-2 border">
                   <button
-                    onClick={() => handleUpdate(study)}
+                    onClick={() => handleUpdate(item)}
                     className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
                   >
                     Update
                   </button>
 
                   <button
-                    onClick={() => handleDelete(study._id)}
+                    onClick={() => handleDelete(item._id)}
                     className="bg-red-500 text-white px-3 py-1 rounded"
                   >
                     Delete
@@ -149,15 +141,15 @@ const MyConnection = () => {
           </tbody>
         </table>
       ) : (
-        <p className="text-center text-gray-500">No connections found.</p>
+        <p className="text-center text-gray-500">No partner requests found.</p>
       )}
 
-      {/* Modal FIXED */}
+      {/* UPDATE MODAL */}
       {isModalOpen && selectedConnection && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded w-full max-w-md shadow-lg">
             <h3 className="text-xl font-semibold mb-4 text-center">
-              Update Connection
+              Update Partner Request
             </h3>
 
             <form onSubmit={handleUpdateSubmit}>
@@ -214,10 +206,10 @@ const MyConnection = () => {
                 />
               </div>
 
-              <div className="flex justify-between mt-4">
+              <div className="flex justify-between">
                 <button
+                  onClick={() => setIsModalOpen(false)}
                   type="button"
-                  onClick={closeModal}
                   className="bg-gray-400 text-white px-4 py-2 rounded"
                 >
                   Cancel
@@ -227,7 +219,7 @@ const MyConnection = () => {
                   type="submit"
                   className="bg-green-600 text-white px-4 py-2 rounded"
                 >
-                  Save Changes
+                  Save
                 </button>
               </div>
             </form>

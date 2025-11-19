@@ -2,41 +2,32 @@ import React, { createContext, useState, useEffect } from "react";
 import { getAuth, onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
 import { app } from "../firebase/firebase.config";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser); // set user
+      setUser(currentUser);
       setLoading(false);
     });
-    return () => unsubscribe(); // cleanup on unmount
+    return () => unsubscribe();
   }, []);
 
-  // login function (optional, mostly handled by Firebase UI)
-  const login = (userData) => setUser(userData);
-
-  // update user profile
   const updateUser = (updateData) => {
     if (auth.currentUser) {
-      return updateProfile(auth.currentUser, updateData)
-        .then(() => setUser({ ...auth.currentUser }))
-        .catch(console.error);
+      return updateProfile(auth.currentUser, updateData).then(() => {
+        setUser({ ...auth.currentUser });
+      });
     }
   };
 
-  // logout function
-  const logout = () =>
-    signOut(auth)
-      .then(() => setUser(null))
-      .catch(console.error);
+  const logout = () => signOut(auth).then(() => setUser(null));
 
-  const authInfo = { user, setUser, login, logout, loading, updateUser };
+  const authInfo = { user, loading, logout, updateUser };
 
   return <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>;
 };
