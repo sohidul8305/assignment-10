@@ -75,10 +75,12 @@ const router = createBrowserRouter([
       //   path: "updatemodel",
       //   element: <UpdateModal />,
       // },
-      {
-        path: "topdetails",
-        element: <TopDetails />,
-      },
+    {
+  path: "topdetails/:id",
+  element: <TopDetails />,
+  loader: ({ params }) =>
+    fetch(`https://assignment-10-server-zeta-gold.vercel.app/study/${params.id}`),
+},
       {
         path: "loadingspinner",
         element: <LoadingSpinner />,

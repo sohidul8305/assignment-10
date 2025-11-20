@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Link, NavLink, useNavigate } from "react-router";
+import React, { useState, useEffect, useContext } from "react";
+import { NavLink, useNavigate } from "react-router";
 import { AuthContext } from "../Provider/AuthProvider";
 import { Menu, X } from "lucide-react";
 import { FaCircleUser } from "react-icons/fa6";
@@ -12,9 +12,9 @@ const Navbar = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const navigate = useNavigate();
 
-  // Update HTML data-theme
+  // DaisyUI theme toggle
   useEffect(() => {
-    document.querySelector("html").setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
 
@@ -23,12 +23,12 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const handleTheme = (checked) => {
-    setTheme(checked ? "dark" : "light");
-  };
+  // helper class for links
+  const linkClass = ({ isActive }) =>
+    `${isActive ? "text-primary" : "text-base-content dark:text-gray-100"} hover:text-primary-focus`;
 
   return (
-    <nav className="bg-gray-800 text-white shadow-md sticky top-0 z-50">
+    <nav className="bg-base-100 text-base-content shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
 
@@ -40,87 +40,60 @@ const Navbar = () => {
               className="h-10 w-10 rounded-full object-cover"
             />
             <NavLink to="/" className="text-2xl font-bold flex gap-1">
-              <span className="text-teal-400">Study</span>
-              <span className="text-blue-400">Mate</span>
+              <span className="text-primary dark:text-gray-100">Study</span>
+              <span className="text-secondary dark:text-gray-100">Mate</span>
             </NavLink>
           </div>
 
           {/* Desktop Menu */}
           <ul className="hidden md:flex gap-6 font-semibold items-center">
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
-              }
-            >
-              Home
-            </NavLink>
-            <NavLink
-              to="/findpartners"
-              className={({ isActive }) =>
-                `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
-              }
-            >
-              Find Partners
-            </NavLink>
+            <NavLink to="/" className={linkClass}>Home</NavLink>
+            <NavLink to="/findpartners" className={linkClass}>Find Partners</NavLink>
 
             {user ? (
               <>
-                <NavLink
-                  to="/createpartnerprofile"
-                  className={({ isActive }) =>
-                    `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
-                  }
-                >
-                  Create Profile
-                </NavLink>
-
-                <NavLink
-                  to="/myconnections"
-                  className={({ isActive }) =>
-                    `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
-                  }
-                >
-                  My Connections
-                </NavLink>
+                <NavLink to="/createpartnerprofile" className={linkClass}>Create Profile</NavLink>
+                <NavLink to="/myconnections" className={linkClass}>My Connections</NavLink>
 
                 {/* User Dropdown */}
                 <div className="relative">
-                  <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="focus:outline-none"
+                  >
                     {user.photoURL ? (
                       <img
                         src={user.photoURL}
+                        className="w-8 h-8 rounded-full border-2 border-primary object-cover"
                         alt="User"
-                        className="w-8 h-8 rounded-full border-2 border-blue-400 object-cover"
                       />
                     ) : (
-                      <FaCircleUser className="w-8 h-8" />
+                      <FaCircleUser className="w-8 h-8 text-base-content dark:text-gray-100" />
                     )}
                   </button>
-
                   {dropdownOpen && (
-                    <ul className="absolute right-0 mt-2 w-40 bg-gray-700 rounded shadow-lg py-1 z-50">
+                    <ul className="absolute right-0 mt-2 w-44 bg-base-200 dark:bg-gray-800 rounded shadow-lg py-1 z-50">
                       <li>
                         <button
                           onClick={() => navigate("/profile")}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-600"
+                          className="block w-full text-left px-4 py-2 text-base-content dark:text-gray-100 hover:bg-base-300 dark:hover:bg-gray-700"
                         >
                           Profile
                         </button>
                       </li>
-                      <li className="flex items-center justify-between px-4 py-2 hover:bg-gray-600">
+                      <li className="flex items-center justify-between px-4 py-2 text-base-content dark:text-gray-100 hover:bg-base-300 dark:hover:bg-gray-700">
                         <span>Dark Mode</span>
                         <input
                           type="checkbox"
-                          className="toggle"
                           checked={theme === "dark"}
-                          onChange={(e) => handleTheme(e.target.checked)}
+                          onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
+                          className="toggle toggle-primary"
                         />
                       </li>
                       <li>
                         <button
                           onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 hover:bg-red-600"
+                          className="block w-full text-left px-4 py-2 text-base-content dark:text-gray-100 hover:bg-red-500 dark:hover:bg-red-600"
                         >
                           Logout
                         </button>
@@ -131,22 +104,8 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <NavLink
-                  to="/login"
-                  className={({ isActive }) =>
-                    `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
-                  }
-                >
-                  Login
-                </NavLink>
-                <NavLink
-                  to="/register"
-                  className={({ isActive }) =>
-                    `hover:text-teal-300 ${isActive ? "text-teal-400" : ""}`
-                  }
-                >
-                  Register
-                </NavLink>
+                <NavLink to="/login" className={linkClass}>Login</NavLink>
+                <NavLink to="/register" className={linkClass}>Register</NavLink>
               </>
             )}
           </ul>
@@ -154,43 +113,39 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button onClick={() => setMenuOpen(!menuOpen)}>
-              {menuOpen ? <X size={28} /> : <Menu size={28} />}
+              {menuOpen ? (
+                <X size={28} className="text-base-content dark:text-gray-100" />
+              ) : (
+                <Menu size={28} className="text-base-content dark:text-gray-100" />
+              )}
             </button>
           </div>
+
         </div>
       </div>
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <ul className="md:hidden bg-gray-800 px-6 py-4 space-y-3 text-lg font-semibold">
-          <NavLink to="/" onClick={() => setMenuOpen(false)}>
-            <li className="hover:text-teal-400">Home</li>
-          </NavLink>
-          <NavLink to="/findpartners" onClick={() => setMenuOpen(false)}>
-            <li className="hover:text-teal-400">Find Partners</li>
-          </NavLink>
-
+        <ul className="md:hidden bg-base-100 dark:bg-gray-900 px-6 py-4 space-y-3 text-lg font-semibold text-base-content dark:text-gray-100">
+          <NavLink to="/" onClick={() => setMenuOpen(false)} className="block">Home</NavLink>
+          <NavLink to="/findpartners" onClick={() => setMenuOpen(false)} className="block">Find Partners</NavLink>
           {user ? (
             <>
-              <NavLink to="/createpartnerprofile" onClick={() => setMenuOpen(false)}>
-                <li className="hover:text-teal-400">Create Profile</li>
-              </NavLink>
-              <NavLink to="/myconnections" onClick={() => setMenuOpen(false)}>
-                <li className="hover:text-teal-400">My Connections</li>
-              </NavLink>
-              <li className="flex items-center justify-between px-3 py-2 hover:bg-gray-700 rounded">
+              <NavLink to="/createpartnerprofile" onClick={() => setMenuOpen(false)} className="block">Create Profile</NavLink>
+              <NavLink to="/myconnections" onClick={() => setMenuOpen(false)} className="block">My Connections</NavLink>
+              <li className="flex items-center justify-between px-3 py-2 hover:bg-base-300 dark:hover:bg-gray-700 rounded text-base-content dark:text-gray-100">
                 <span>Dark Mode</span>
                 <input
                   type="checkbox"
-                  className="toggle"
                   checked={theme === "dark"}
-                  onChange={(e) => handleTheme(e.target.checked)}
+                  onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
+                  className="toggle toggle-primary"
                 />
               </li>
               <li>
                 <button
-                  onClick={() => { handleLogout(); setMenuOpen(false); }}
-                  className="bg-red-500 hover:bg-red-600 w-full text-left px-3 py-2 rounded"
+                  onClick={handleLogout}
+                  className="w-full text-left px-3 py-2 rounded bg-red-500 hover:bg-red-600 dark:hover:bg-red-700 text-base-content dark:text-gray-100"
                 >
                   Logout
                 </button>
@@ -198,12 +153,8 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <NavLink to="/login" onClick={() => setMenuOpen(false)}>
-                <li className="hover:text-teal-400">Login</li>
-              </NavLink>
-              <NavLink to="/register" onClick={() => setMenuOpen(false)}>
-                <li className="hover:text-teal-400">Register</li>
-              </NavLink>
+              <NavLink to="/login" onClick={() => setMenuOpen(false)} className="block">Login</NavLink>
+              <NavLink to="/register" onClick={() => setMenuOpen(false)} className="block">Register</NavLink>
             </>
           )}
         </ul>

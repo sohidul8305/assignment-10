@@ -12,27 +12,34 @@ import { AuthContext } from "../Provider/AuthProvider";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { login } = useContext(AuthContext);
   const provider = new GoogleAuthProvider();
   const navigate = useNavigate();
 
   const handleLogin = (event) => {
     event.preventDefault();
+    setLoading(true);
+
     const email = event.target.email.value;
     const password = event.target.password.value;
 
+    // Password validation
     const uppercaseReg = /[A-Z]/;
     const lowercaseReg = /[a-z]/;
     if (!uppercaseReg.test(password)) {
       toast.error("Password must contain at least one uppercase letter!");
+      setLoading(false);
       return;
     }
     if (!lowercaseReg.test(password)) {
       toast.error("Password must contain at least one lowercase letter!");
+      setLoading(false);
       return;
     }
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters long!");
+      setLoading(false);
       return;
     }
 
@@ -49,12 +56,14 @@ const Login = () => {
         navigate("/");
       })
       .catch((error) => {
-        console.error(error.message);
-        toast.error("Login failed. Maybe email already used?");
-      });
+        console.error("Firebase login error:", error.code, error.message);
+        toast.error(`Login failed: ${error.message}`);
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleGoogleLogin = () => {
+    setLoading(true);
     signInWithPopup(auth, provider)
       .then((result) => {
         const userData = {
@@ -68,9 +77,10 @@ const Login = () => {
         navigate("/");
       })
       .catch((error) => {
-        console.error(error.message);
-        toast.error("Google login failed");
-      });
+        console.error("Google login error:", error.code, error.message);
+        toast.error(`Google login failed: ${error.message}`);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -103,7 +113,7 @@ const Login = () => {
                     className="input w-full pr-14"
                     name="password"
                     autoComplete="new-password"
-                    placeholder="password"
+                    placeholder="Password"
                     required
                   />
                   <button
@@ -116,15 +126,23 @@ const Login = () => {
                 </div>
 
                 <div>
-                  <a className="link link-hover text-white">Forgot password?</a>
+                  <Link className="link link-hover text-white" to="/forgot-password">
+                    Forgot password?
+                  </Link>
                 </div>
-                <button className="btn btn-warning mt-4 w-full">Login</button>
+                <button
+                  className="btn btn-warning mt-4 w-full"
+                  disabled={loading}
+                >
+                  {loading ? "Logging in..." : "Login"}
+                </button>
               </fieldset>
             </form>
 
             <button
               onClick={handleGoogleLogin}
               className="btn bg-white text-black border-[#e5e5e5] w-full mt-3 flex items-center justify-center"
+              disabled={loading}
             >
               <svg
                 width="16"
@@ -153,7 +171,7 @@ const Login = () => {
                   ></path>
                 </g>
               </svg>
-              Login with Google
+              {loading ? "Logging in..." : "Login with Google"}
             </button>
 
             <div className="flex gap-2 justify-center mt-4 text-white">

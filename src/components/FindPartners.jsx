@@ -19,7 +19,7 @@ const FindPartners = () => {
       .get("http://localhost:3000/study")
       .then((res) => {
         // normalize subject to always be array
-        const normalized = res.data.map(p => ({
+        const normalized = res.data.map((p) => ({
           ...p,
           subject: Array.isArray(p.subject)
             ? p.subject
@@ -46,9 +46,7 @@ const FindPartners = () => {
   // Search + Sort
   const filteredPartners = partners
     .filter((p) =>
-      p.subject.some((s) =>
-        s.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      p.subject.some((s) => s.toLowerCase().includes(searchTerm.toLowerCase()))
     )
     .sort((a, b) => {
       const levels = { Beginner: 1, Intermediate: 2, Expert: 3 };
@@ -83,7 +81,9 @@ const FindPartners = () => {
         />
       </div>
 
-      {loading && <p className="text-center text-gray-600 mb-4">Loading partners...</p>}
+      {loading && (
+        <p className="text-center text-gray-600 mb-4">Loading partners...</p>
+      )}
 
       {/* Partners Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -94,12 +94,18 @@ const FindPartners = () => {
               className="bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition"
             >
               <img
-                src={partner.profileimage || partner.image || "https://via.placeholder.com/150"}
+                src={
+                  partner.profileimage ||
+                  partner.image ||
+                  "https://via.placeholder.com/150"
+                }
                 alt={partner.name}
                 className="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-4 border-blue-500"
               />
 
-              <h3 className="text-xl font-semibold text-center mb-2">{partner.name}</h3>
+              <h3 className="text-xl text-center mb-2 text-base-content">
+                {partner.name}
+              </h3>
 
               <p className="text-center text-gray-600">
                 <strong>Subject:</strong> {partner.subject.join(", ")}
@@ -128,7 +134,9 @@ const FindPartners = () => {
             </div>
           ))
         ) : (
-          <p className="col-span-full text-center text-gray-500">No partners found.</p>
+          <p className="col-span-full text-center text-gray-500">
+            No partners found.
+          </p>
         )}
       </div>
     </div>
