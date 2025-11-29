@@ -29,7 +29,9 @@ const FindPartners = () => {
         }));
         setPartners(normalized);
       })
-      .catch(() => toast.error("Failed to fetch partners"))
+      .catch((error) =>{
+        console.log(error)
+      })
       .finally(() => setLoading(false));
   }, []);
 
