@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const API_BASE = "https://assignment-10-server-zeta-gold.vercel.app";
+const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
 
 const UpdateModal = ({ data, onClose, onUpdated, userEmail }) => {
   const [form, setForm] = useState({ ...data });

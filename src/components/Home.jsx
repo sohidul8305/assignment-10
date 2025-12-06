@@ -10,7 +10,7 @@ const Home = () => {
   const [studyData, setStudyData] = useState([]);
 
   useEffect(() => {
-    fetch("https://assignment-10-server-zeta-gold.vercel.app/study")
+    fetch("https://assignmentserver-lovat.vercel.app/study")
       .then((res) => res.json())
       .then((data) => {
         setStudyData(data);

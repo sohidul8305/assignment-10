@@ -4,7 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../Provider/AuthProvider";
 
-const API_BASE = "https://assignment-10-server-zeta-gold.vercel.app";
+const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
 
 const PartnerDetails = () => {
   const { id } = useParams();

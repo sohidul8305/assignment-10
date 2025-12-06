@@ -1,27 +1,13 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
-import LoadingSpinner from "../components/LoadingSpinner";
 import axios from "axios";
 
-const API_BASE = "https://assignment-10-server-zeta-gold.vercel.app";
+const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
 
-const CreatePartnerProfile = ({ partnerId }) => {
+const CreatePartnerProfile = () => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [initialData, setInitialData] = useState({});
-
-  // Fetch data if partnerId exists (update mode)
-  useEffect(() => {
-    if (!partnerId) return;
-
-    setLoading(true);
-    axios
-      .get(`${API_BASE}/study/${partnerId}`)
-      .then((res) => setInitialData(res.data))
-      .catch(() => toast.error("Failed to load profile"))
-      .finally(() => setLoading(false));
-  }, [partnerId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,37 +18,45 @@ const CreatePartnerProfile = ({ partnerId }) => {
     const data = {
       name: form.name.value,
       profileimage: form.profileimage.value,
-      subject: form.subject.value,
+      subject: form.subject.value.split(",").map((s) => s.trim()),
       studyMode: form.studyMode.value,
       availabilityTime: form.availabilityTime.value,
       location: form.location.value,
       experienceLevel: form.experienceLevel.value,
-      skills: form.skills.value,
+      rating: Number(form.rating.value),
+      partnerCount: 0,
       email: user?.email,
     };
 
     try {
-      if (partnerId) {
-        await axios.put(`${API_BASE}/study/${partnerId}`, data);
-        toast.success("Profile updated!");
-      } else {
-        await axios.post(`${API_BASE}/study`, data);
-        toast.success("Profile created!");
+      const res = await axios.post(`${API_BASE}/study`, data);
+
+      if (res.data.insertedId) {
+        toast.success("Profile created successfully!");
         form.reset();
+      } else {
+        toast.error("Failed to create profile");
       }
-    } catch {
-      toast.error("Failed to save");
+    } catch (err) {
+      console.error("Submit Error:", err); // ✅ FIXED
+      toast.error("Failed to save profile");
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <LoadingSpinner />;
+  if (!user) {
+    return (
+      <p className="text-center text-red-500 text-xl mt-10">
+        Please login first to create a profile.
+      </p>
+    );
+  }
 
   return (
-    <div className="max-w-md mx-auto p-5 bg-white shadow rounded">
-      <h2 className="text-xl font-semibold mb-4 text-center">
-        {partnerId ? "Update Profile" : "Create Profile"}
+    <div className="max-w-md mx-auto p-5 bg-white shadow rounded my-10">
+      <h2 className="text-2xl font-semibold mb-4 text-center">
+        Create Partner Profile
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-3">
@@ -71,7 +65,6 @@ const CreatePartnerProfile = ({ partnerId }) => {
           type="text"
           name="name"
           placeholder="Full Name"
-          defaultValue={initialData.name}
           className="w-full p-2 border rounded"
           required
         />
@@ -79,75 +72,69 @@ const CreatePartnerProfile = ({ partnerId }) => {
         <input
           type="url"
           name="profileimage"
-          placeholder="Photo URL"
-          defaultValue={initialData.profileimage}
+          placeholder="Profile Photo URL"
           className="w-full p-2 border rounded"
         />
 
         <input
           type="text"
           name="subject"
-          placeholder="Subject"
-          defaultValue={initialData.subject}
+          placeholder="Subjects (comma separated)"
           className="w-full p-2 border rounded"
+          required
         />
 
-        <select
-          name="studyMode"
-          defaultValue={initialData.studyMode || "Online"}
-          className="w-full p-2 border rounded"
-        >
-          <option>Online</option>
-          <option>Offline</option>
+        <select name="studyMode" className="w-full p-2 border rounded">
+          <option value="Online">Online</option>
+          <option value="Offline">Offline</option>
         </select>
 
         <input
           type="text"
           name="availabilityTime"
-          placeholder="Availability Time"
-          defaultValue={initialData.availabilityTime}
+          placeholder="Availability Time (e.g. 6–9 PM)"
           className="w-full p-2 border rounded"
+          required
         />
 
         <input
           type="text"
           name="location"
           placeholder="Location"
-          defaultValue={initialData.location}
           className="w-full p-2 border rounded"
+          required
         />
 
-        <select
-          name="experienceLevel"
-          defaultValue={initialData.experienceLevel || "Beginner"}
-          className="w-full p-2 border rounded"
-        >
+        <select name="experienceLevel" className="w-full p-2 border rounded">
           <option>Beginner</option>
           <option>Intermediate</option>
           <option>Expert</option>
         </select>
 
         <input
-          type="text"
-          name="skills"
-          placeholder="Skills"
-          defaultValue={initialData.skills}
+          type="number"
+          name="rating"
+          placeholder="Rating (0–5)"
+          min="0"
+          max="5"
+          step="0.1"
           className="w-full p-2 border rounded"
+          required
         />
 
         <input
           type="email"
-          name="email"
-          value={user?.email || ""}
+          value={user.email}
           readOnly
           className="w-full p-2 border bg-gray-100 rounded"
         />
 
         <button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded"
+          disabled={loading}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
         >
-          {partnerId ? "Save Changes" : "Create"}
+          {loading ? "Saving..." : "Create Profile"}
         </button>
       </form>
     </div>

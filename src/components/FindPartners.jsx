@@ -15,7 +15,7 @@ const FindPartners = () => {
   // Fetch partners
   useEffect(() => {
     setLoading(true);
-   axios.get("https://assignment-10-server-zeta-gold.vercel.app/study")
+   axios.get("https://assignmentserver-lovat.vercel.app/study")
       .then((res) => {
         // normalize subject to always be array
         const normalized = res.data.map((p) => ({

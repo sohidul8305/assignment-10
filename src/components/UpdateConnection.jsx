@@ -10,7 +10,7 @@ const UpdateConnection = () => {
 
   useEffect(() => {
     axios
-      .get(`https://assignment-10-server-zeta-gold.vercel.app/study/${id}`)
+      .get(`https://assignmentserver-lovat.vercel.app/study/${id}`)
       .then((res) => setConnection(res.data))
       .catch((err) => console.error(err));
   }, [id]);
@@ -28,7 +28,7 @@ const UpdateConnection = () => {
 
     axios
       .put(
-        `https://assignment-10-server-zeta-gold.vercel.app/study/${id}`,
+        `https://assignmentserver-lovat.vercel.app/study/${id}`,
         updatedData
       )
       .then((res) => {
