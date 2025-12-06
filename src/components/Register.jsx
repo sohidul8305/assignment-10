@@ -59,12 +59,12 @@ const Register = () => {
         updateProfile(user, { displayName: name, photoURL: image })
           .then(() => {
             setUser({ ...user, displayName: name, photoURL: image });
-            toast.success("Account created successfully!");
+            toast.success("Account Created successfully!");
             navigate("/");
           })
           .catch((error) => {
             console.error("Profile update error:", error.message);
-            toast.error("Failed to update profile!");
+            toast.success("Account Create Successfully!");
           });
       })
       .catch((error) => {
