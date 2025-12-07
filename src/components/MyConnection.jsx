@@ -3,7 +3,7 @@ import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
 import LoadingSpinner from "./LoadingSpinner";
 
-const API_BASE = "https://assignmentserver-lovat.vercel.app/study"; // development local server
+const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
 
 export default function MyCollection() {
   const { user, loading } = useContext(AuthContext);
