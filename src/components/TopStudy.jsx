@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
 
-const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
+const API_BASE = "https://assignmentserver-lovat.vercel.app";
 
 const TopStudy = () => {
   const [partners, setPartners] = useState([]);
