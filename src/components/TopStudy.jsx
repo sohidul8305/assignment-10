@@ -3,30 +3,34 @@ import { Link } from "react-router";
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
 
-const API_BASE = "https://assignmentserver-lovat.vercel.app";
+const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
 
 const TopStudy = () => {
   const [partners, setPartners] = useState([]);
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    fetch(`${API_BASE}/study`)
+    fetch(`${API_BASE}`)
       .then((res) => res.json())
       .then((data) => {
-        const normalized = data.map((p) => ({
-          ...p,
-          name: p.name || p.fullName || "N/A",
-          rating: p.rating || p.rate || 0,
-          profileimage: p.profileimage || p.image || "https://via.placeholder.com/150",
-          subjectName:
-            Array.isArray(p.subject)
-              ? p.subject.join(", ")
-              : Array.isArray(p.subjects)
-              ? p.subjects.join(", ")
-              : Array.isArray(p.skills)
-              ? p.skills.join(", ")
-              : p.skill || "N/A",
-        }));
+        const normalized = data.map((p) => {
+          let subject = [];
+          let skills = [];
+
+          if (Array.isArray(p.subject) && p.subject.length > 0) {
+            subject.push(p.subject[0]);       // প্রথমটি subject
+            if (p.subject[1]) skills.push(p.subject[1]); // দ্বিতীয়টি skill
+          }
+
+          return {
+            ...p,
+            name: p.name || p.fullName || "N/A",
+            rating: p.rating || p.rate || 0,
+            profileimage: p.profileimage || p.image || "https://via.placeholder.com/150",
+            subjectArray: subject,
+            skillsArray: skills,
+          };
+        });
         setPartners(normalized);
       })
       .catch((err) => console.error(err));
@@ -56,7 +60,10 @@ const TopStudy = () => {
             <h3 className="text-xl font-semibold text-center">{partner.name}</h3>
             <p className="text-center text-gray-600 mt-1">⭐ {partner.rating}</p>
             <p className="text-center text-gray-700 text-sm mt-2">
-              <strong>Subjects:</strong> {partner.subjectName}
+              <strong>Subject:</strong> {partner.subjectArray.join(", ") || "No subject listed"}
+            </p>
+            <p className="text-center text-gray-700 text-sm mt-1">
+              <strong>Skills:</strong> {partner.skillsArray.join(", ") || "No skills listed"}
             </p>
 
             <div className="text-center mt-4">
@@ -73,7 +80,7 @@ const TopStudy = () => {
                   className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition inline-block"
                   onClick={() => toast.error("Please login first!")}
                 >
-                  view profile
+                  View Profile
                 </Link>
               )}
             </div>

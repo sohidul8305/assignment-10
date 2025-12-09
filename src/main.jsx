@@ -21,6 +21,7 @@ import NotFound from './components/NotFound.jsx'
 import UpdateConnection from './components/UpdateConnection.jsx'
 import Partnersdetails from './components/Partnersdetails.jsx'
 import TopDetails from './components/Topdetails.jsx'
+import TopStudyDetails from './components/Topdetails.jsx'
 // import UpdateModal from './components/UpdateModal.jsx'
 
 const router = createBrowserRouter([
@@ -31,12 +32,12 @@ const router = createBrowserRouter([
       {
         index: true, 
         element: <Home />,
-        loader: () => fetch("https://assignment-10-server-zeta-gold.vercel.app/study"),
+        loader: () => fetch("https://assignmentserver-lovat.vercel.app/study"),
       },
       {
         path: "findpartners",
         element: <FindPartners />,
-        loader: () => fetch('https://assignment-10-server-zeta-gold.vercel.app/study'),
+        loader: () => fetch('https://assignmentserver-lovat.vercel.app/study'),
       },
       {
         path: "login",
@@ -53,16 +54,16 @@ const router = createBrowserRouter([
       {
         path: "topstudy",
         element: <TopStudy />,
-        loader: ({ params }) => fetch(`https://assignment-10-server-zeta-gold.vercel.app/study${params.id}`),
+        loader: ({ params }) => fetch(`https://assignmentserver-lovat.vercel.app/study${params.id}`),
       },
       {
         path: "studycards",
         element: <StudyCards />,
       },
-      {
-        path: "/profileuser/:id",
-        element: <Profileuser />,
-      },
+    {
+  path: "/profile",
+  element: <Profileuser />,
+},
       {
         path: "createpartnerprofile",
         element: <CreatePartnerProfile />,
@@ -75,12 +76,13 @@ const router = createBrowserRouter([
       //   path: "updatemodel",
       //   element: <UpdateModal />,
       // },
-    {
-  path: "topdetails/:id",
-  element: <TopDetails />,
+{
+  path: "/topdetails/:id",
+  element: <TopStudyDetails />,
   loader: ({ params }) =>
-    fetch(`https://assignment-10-server-zeta-gold.vercel.app/study/${params.id}`),
-},
+    fetch(`https://assignmentserver-lovat.vercel.app/study/${params.id}`),
+}
+,
       {
         path: "loadingspinner",
         element: <LoadingSpinner />,
@@ -93,9 +95,9 @@ const router = createBrowserRouter([
   path: "partnerdetails/:id",
   element: <PartnerDetails />,
   loader: ({ params }) =>
-    fetch(`https://assignment-10-server-zeta-gold.vercel.app/study/${params.id}`),
+    fetch(`https://assignmentserver-lovat.vercel.app/study/${params.id}`),
 },
-      
+
       { path: "404", element: <NotFound /> },
       { path: "*", element: <Navigate to="/404" /> },
     ],
