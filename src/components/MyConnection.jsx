@@ -3,7 +3,7 @@ import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
 import LoadingSpinner from "./LoadingSpinner";
 
-const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
+const API_BASE = "https://assignmentserver-lovat.vercel.app";
 
 export default function MyCollection() {
   const { user, loading } = useContext(AuthContext);
@@ -22,8 +22,9 @@ export default function MyCollection() {
     fetch(`${API_BASE}/study`)
       .then(res => res.json())
       .then(data => {
+        console.log("Fetched study data:", data);
         const userConnections = data
-          .filter(item => item.email === user.email)
+          .filter(item => item.email?.toLowerCase() === user.email.toLowerCase())
           .map(item => ({
             ...item,
             subject: Array.isArray(item.subject)
@@ -34,7 +35,10 @@ export default function MyCollection() {
           }));
         setConnections(userConnections);
       })
-      .catch(() => toast.error("Failed to load connections"))
+      .catch(err => {
+        console.error(err);
+        toast.error("Failed to load connections");
+      })
       .finally(() => setBusy(false));
   }, [user, loading]);
 
@@ -58,11 +62,14 @@ export default function MyCollection() {
         method: "DELETE",
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.deletedCount > 0) {
         toast.success("Deleted successfully");
         setConnections(prev => prev.filter(i => i._id !== deleteTarget._id));
-      } else toast.error(data.message || "Delete failed");
-    } catch {
+      } else {
+        toast.error("Delete failed");
+      }
+    } catch (err) {
+      console.error(err);
       toast.error("Delete failed");
     }
     setBusy(false);
@@ -92,15 +99,16 @@ export default function MyCollection() {
         body: JSON.stringify(updatedData),
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.modifiedCount > 0) {
         toast.success("Updated successfully!");
         setConnections(prev =>
           prev.map(item => item._id === selectedConnection._id ? { ...item, ...updatedData } : item)
         );
         setIsUpdateModalOpen(false);
         setSelectedConnection(null);
-      } else toast.error(data.message || "No changes made");
-    } catch {
+      } else toast.error("No changes made");
+    } catch (err) {
+      console.error(err);
       toast.error("Update failed");
     }
     setBusy(false);

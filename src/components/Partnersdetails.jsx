@@ -4,94 +4,110 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../Provider/AuthProvider";
 
-const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
+const API_BASE = "http://localhost:3000"; // backend URL
 
 const PartnerDetails = () => {
   const { id } = useParams();
   const [partner, setPartner] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // ======================
+  // LOAD PARTNER DETAILS
+  // ======================
   useEffect(() => {
     axios
       .get(`${API_BASE}/study/${id}`)
       .then((res) => {
-        // Normalize fields
-        const p = res.data;
-        setPartner({
-          ...p,
-          subjectName:
-            (Array.isArray(p.subject) ? p.subject.join(", ") : p.subject) ||
-            (Array.isArray(p.subjects) ? p.subjects.join(", ") : p.subjects) ||
-            (Array.isArray(p.skills) ? p.skills.join(", ") : p.skills) ||
-            "N/A",
-          studyMode: p.studyMode || p.mode || "N/A",
-          availability: p.availabilityTime || p.availability || p.time || "N/A",
-          experience: p.experienceLevel || p.experience || p.level || "N/A",
-          partnerCount: p.partnerCount || p.count || p.totalPartners || 0,
-          rating: p.rating || p.rate || "N/A",
-          location: p.location || "N/A",
-          email: p.email || "N/A",
-          requestCount: p.requestCount || 0
-        });
+        setPartner(res.data);
         setLoading(false);
       })
-      .catch(() => {
-        toast.error("Failed to load partner details");
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to load partner");
         setLoading(false);
       });
   }, [id]);
 
-  const handleSendRequest = () => {
+  // ======================
+  // SEND REQUEST + COUNT +1
+  // ======================
+  const handleSendRequest = async () => {
     if (!user) {
-      toast.error("Please login first!");
+      toast.error("Please login first");
       navigate("/login");
       return;
     }
+    if (sending) return;
 
-    axios
-      .post(`${API_BASE}/partnerRequests`, {
-        senderId: user.uid,
-        receiverId: partner._id,
-      })
-      .then(() => {
-        toast.success("Partner Request Sent!");
-        setPartner((prev) => ({
-          ...prev,
-          partnerCount: (prev.partnerCount || 0) + 1
-        }));
-      })
-      .catch(() => toast.error("Failed to send request"));
+    setSending(true);
+
+    try {
+      // Increment partnerCount
+      const res = await axios.post(`${API_BASE}/study/${partner._id}/incrementCount`);
+      if (res.data.success) {
+        // UI-তে count update
+        setPartner((prev) => ({ ...prev, partnerCount: prev.partnerCount + 1 }));
+        toast.success("Partner request sent!");
+      } else {
+        toast.error("Failed to send request");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send request");
+    } finally {
+      setSending(false);
+    }
   };
 
+  // ======================
+  // UI
+  // ======================
   if (loading) return <p className="text-center mt-10">Loading...</p>;
-  if (!partner) return <p className="text-center mt-10">Partner not found</p>;
+  if (!partner) return <p className="text-center mt-10">Partner Not Found</p>;
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow">
       <img
         src={partner.profileimage || partner.image || "https://via.placeholder.com/150"}
-        alt={partner.name}
+        alt={partner.name || "Partner"}
         className="w-40 h-40 mx-auto rounded-full border-4 border-blue-500 object-cover"
       />
       <h1 className="text-3xl font-bold text-center mt-4">{partner.name}</h1>
-      <p className="text-center text-gray-600 mt-2">⭐ {partner.rating}</p>
+      <p className="text-center text-gray-600 mt-2">⭐ {partner.rating || "N/A"}</p>
 
       <div className="mt-4 space-y-2 text-gray-700">
-        <p><strong>Subject:</strong> {partner.subjectName}</p>
-        <p><strong>Study Mode:</strong> {partner.studyMode}</p>
-        <p><strong>Availability:</strong> {partner.availability}</p>
-        <p><strong>Location:</strong> {partner.location}</p>
-        <p><strong>Experience Level:</strong> {partner.experience}</p>
-        <p><strong>Partner Count:</strong> {partner.partnerCount}</p>
+        <p>
+          <strong>Subject:</strong>{" "}
+          {Array.isArray(partner.subject) ? partner.subject.join(", ") : partner.subject || "N/A"}
+        </p>
+        <p>
+          <strong>Study Mode:</strong> {partner.studyMode || partner.mode || "N/A"}
+        </p>
+        <p>
+          <strong>Availability:</strong> {partner.availabilityTime || partner.time || "N/A"}
+        </p>
+        <p>
+          <strong>Location:</strong> {partner.location || "N/A"}
+        </p>
+        <p>
+          <strong>Experience Level:</strong> {partner.experienceLevel || partner.level || "N/A"}
+        </p>
+        <p>
+          <strong>Partner Count:</strong> {partner.partnerCount || 0}
+        </p>
       </div>
 
       <button
         onClick={handleSendRequest}
-        className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition"
+        disabled={sending}
+        className={`w-full mt-6 ${
+          sending ? "bg-green-400" : "bg-green-600 hover:bg-green-700"
+        } text-white py-2 rounded-lg transition`}
       >
-        Send Partner Request
+        {sending ? "Sending..." : "Send Partner Request"}
       </button>
     </div>
   );

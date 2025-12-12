@@ -15,9 +15,10 @@ const FindPartners = () => {
   // Fetch partners
   useEffect(() => {
     setLoading(true);
-   axios.get("https://assignmentserver-lovat.vercel.app/study")
+    axios
+      .get("https://assignmentserver-lovat.vercel.app/study")
       .then((res) => {
-        // normalize subject to always be array
+        // Normalize subject to always be array
         const normalized = res.data.map((p) => ({
           ...p,
           subject: Array.isArray(p.subject)
@@ -26,10 +27,14 @@ const FindPartners = () => {
             ? [p.subject]
             : [],
         }));
-        setPartners(normalized);
+
+        // 🔥 Remove first 3 partners (Top 3)
+        const filtered = normalized.slice(3);
+
+        setPartners(filtered);
       })
-      .catch((error) =>{
-        console.log(error)
+      .catch((error) => {
+        console.log(error);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -44,10 +49,12 @@ const FindPartners = () => {
     navigate(`/partnerdetails/${id}`);
   };
 
-  // Search + Sort
+  // Search + Sort logic
   const filteredPartners = partners
     .filter((p) =>
-      p.subject.some((s) => s.toLowerCase().includes(searchTerm.toLowerCase()))
+      p.subject.some((s) =>
+        s.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     )
     .sort((a, b) => {
       const levels = { Beginner: 1, Intermediate: 2, Expert: 3 };

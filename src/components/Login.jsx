@@ -1,22 +1,19 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router";
-import {
-  signInWithPopup,
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
 import { Eye, EyeOff } from "lucide-react";
-import toast from "react-hot-toast";
 import { AuthContext } from "../Provider/AuthProvider";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { login } = useContext(AuthContext);
-  const provider = new GoogleAuthProvider();
   const navigate = useNavigate();
+  const provider = new GoogleAuthProvider();
 
+  // Email/Password Login
   const handleLogin = (event) => {
     event.preventDefault();
     setLoading(true);
@@ -24,61 +21,28 @@ const Login = () => {
     const email = event.target.email.value;
     const password = event.target.password.value;
 
-    // Password validation
-    const uppercaseReg = /[A-Z]/;
-    const lowercaseReg = /[a-z]/;
-    if (!uppercaseReg.test(password)) {
-      toast.error("Password must contain at least one uppercase letter!");
-      setLoading(false);
-      return;
-    }
-    if (!lowercaseReg.test(password)) {
-      toast.error("Password must contain at least one lowercase letter!");
-      setLoading(false);
-      return;
-    }
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long!");
-      setLoading(false);
-      return;
-    }
-
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        const userData = {
-          email: result.user.email,
-          photoURL:
-            result.user.photoURL ||
-            "https://i.ibb.co/YpJ2zH8/default-avatar.png",
-        };
-        login(userData);
+        login(result.user);
         toast.success("Login successful!");
         navigate("/");
       })
-      .catch((error) => {
-        console.error("Firebase login error:", error.code, error.message);
-        toast.error(`Login failed: ${error.message}`);
+      .catch((err) => {
+        console.log(err)
       })
       .finally(() => setLoading(false));
   };
 
+  // Google Login
   const handleGoogleLogin = () => {
     setLoading(true);
     signInWithPopup(auth, provider)
       .then((result) => {
-        const userData = {
-          email: result.user.email,
-          photoURL:
-            result.user.photoURL ||
-            "https://i.ibb.co/YpJ2zH8/default-avatar.png",
-        };
-        login(userData);
-        toast.success("Google Login successful!");
+        login(result.user);
+        toast.success("Google login successful!");
         navigate("/");
       })
-      .catch((error) => {
-        console.error("Google login error:", error.code, error.message);
-        toast.error(`Google login failed: ${error.message}`);
+      .catch(() => {
       })
       .finally(() => setLoading(false));
   };
@@ -87,99 +51,46 @@ const Login = () => {
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="card bg-blue-400 w-full max-w-md shadow-2xl p-10">
-          <h1 className="text-3xl font-bold text-center text-white">
-            Login now!
-          </h1>
+          <h1 className="text-3xl font-bold text-center text-white">Login now!</h1>
 
           <div className="card-body">
             <form onSubmit={handleLogin}>
-              <fieldset className="fieldset space-y-2">
-                <label className="label text-white" autoComplete="off">
-                  Email
-                </label>
+              <label className="label text-white">Email</label>
+              <input type="email" name="email" className="input w-full" required />
+
+              <label className="label text-white">Password</label>
+              <div className="relative">
                 <input
-                  type="email"
-                  className="input w-full"
-                  name="email"
-                  placeholder="Email"
-                  autoComplete="off"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  className="input w-full pr-14"
                   required
                 />
-
-                <label className="label text-white">Password</label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    className="input w-full pr-14"
-                    name="password"
-                    autoComplete="new-password"
-                    placeholder="Password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-3 text-gray-600 hover:text-black"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-
-                <div>
-                  <Link className="link link-hover text-white" to="/forgot-password">
-                    Forgot password?
-                  </Link>
-                </div>
                 <button
-                  className="btn btn-warning mt-4 w-full"
-                  disabled={loading}
+                  type="button"
+                  className="absolute right-3 top-3 text-gray-600"
+                  onClick={() => setShowPassword(!showPassword)}
                 >
-                  {loading ? "Logging in..." : "Login"}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
-              </fieldset>
+              </div>
+
+              <button className="btn btn-warning w-full mt-5" disabled={loading}>
+                {loading ? "Logging in..." : "Login"}
+              </button>
             </form>
 
             <button
               onClick={handleGoogleLogin}
-              className="btn bg-white text-black border-[#e5e5e5] w-full mt-3 flex items-center justify-center"
+              className="btn bg-white text-black border mt-3 w-full"
               disabled={loading}
             >
-              <svg
-                width="16"
-                height="16"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                className="mr-2"
-              >
-                <g>
-                  <path d="m0 0H512V512H0" fill="#fff"></path>
-                  <path
-                    fill="#34a853"
-                    d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
-                  ></path>
-                  <path
-                    fill="#4285f4"
-                    d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
-                  ></path>
-                  <path
-                    fill="#fbbc02"
-                    d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
-                  ></path>
-                  <path
-                    fill="#ea4335"
-                    d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
-                  ></path>
-                </g>
-              </svg>
-              {loading ? "Logging in..." : "Login with Google"}
+              {loading ? "Processing..." : "Login with Google"}
             </button>
 
-            <div className="flex gap-2 justify-center mt-4 text-white">
-              <p>Don’t have an account? please</p>
-              <Link
-                to="/register"
-                className="text-blue-900 font-semibold underline hover:text-blue-700"
-              >
+            <div className="text-center text-white mt-4">
+              Don’t have an account?
+              <Link to="/register" className="text-blue-900 underline ml-1">
                 Register
               </Link>
             </div>
