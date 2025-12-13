@@ -1,4 +1,3 @@
-// PartnerDetails.jsx
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router";
 import axios from "axios";
@@ -35,33 +34,33 @@ const PartnerDetails = () => {
   // ======================
   // SEND REQUEST + COUNT +1
   // ======================
-const handleSendRequest = async () => {
-  if (!user) {
-    toast.error("Please login first");
-    navigate("/login");
-    return;
-  }
-
-  if (sending) return;
-  setSending(true);
-
-  try {
-    const res = await axios.post(`${API_BASE}/study/${partner._id}/incrementCount`);
-    const updatedPartner = res.data.partner;
-
-    if (updatedPartner) {
-      setPartner(updatedPartner); // UI তে count update
-      toast.success("Partner request sent!");
-    } else {
-      toast.error("Failed to send request");
+  const handleSendRequest = async () => {
+    if (!user) {
+      toast.error("Please login first");
+      navigate("/login");
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to send request");
-  } finally {
-    setSending(false);
-  }
-};
+    if (sending) return;
+
+    setSending(true);
+
+    try {
+      // Increment partnerCount
+      const res = await axios.post(`${API_BASE}/study/${partner._id}/incrementCount`);
+      if (res.data.success) {
+        // UI-তে count update
+        setPartner((prev) => ({ ...prev, partnerCount: prev.partnerCount + 1 }));
+        toast.success("Partner request sent!");
+      } else {
+        toast.error("Failed to send request");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send request");
+    } finally {
+      setSending(false);
+    }
+  };
 
   // ======================
   // UI
@@ -76,22 +75,19 @@ const handleSendRequest = async () => {
         alt={partner.name || "Partner"}
         className="w-40 h-40 mx-auto rounded-full border-4 border-blue-500 object-cover"
       />
-
       <h1 className="text-3xl font-bold text-center mt-4">{partner.name}</h1>
       <p className="text-center text-gray-600 mt-2">⭐ {partner.rating || "N/A"}</p>
 
       <div className="mt-4 space-y-2 text-gray-700">
         <p>
           <strong>Subject:</strong>{" "}
-          {Array.isArray(partner.subject)
-            ? partner.subject.join(", ")
-            : partner.subject || "N/A"}
+          {Array.isArray(partner.subject) ? partner.subject.join(", ") : partner.subject || "N/A"}
         </p>
         <p>
           <strong>Study Mode:</strong> {partner.studyMode || partner.mode || "N/A"}
         </p>
         <p>
-          <strong>Availability:</strong> {partner.availability || partner.time || "N/A"}
+          <strong>Availability:</strong> {partner.availabilityTime || partner.time || "N/A"}
         </p>
         <p>
           <strong>Location:</strong> {partner.location || "N/A"}
