@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router"; // corrected import
 import { AuthContext } from "../Provider/AuthProvider";
 import toast from "react-hot-toast";
 
@@ -10,27 +10,21 @@ const TopStudy = () => {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    fetch(`${API_BASE}`)
+    fetch(API_BASE)
       .then((res) => res.json())
       .then((data) => {
-        const normalized = data.map((p) => {
-          let subject = [];
-          let skills = [];
-
-          if (Array.isArray(p.subject) && p.subject.length > 0) {
-            subject.push(p.subject[0]);       // প্রথমটি subject
-            if (p.subject[1]) skills.push(p.subject[1]); // দ্বিতীয়টি skill
-          }
-
-          return {
-            ...p,
-            name: p.name || p.fullName || "N/A",
-            rating: p.rating || p.rate || 0,
-            profileimage: p.profileimage || p.image || "https://via.placeholder.com/150",
-            subjectArray: subject,
-            skillsArray: skills,
-          };
-        });
+        const normalized = data
+          .filter(p => p.rating > 0 || p.partnerCount > 0)
+          .map((p) => {
+            return {
+              ...p,
+              name: p.name || p.fullName || "N/A",
+              rating: p.rating || p.rate || 0,
+              profileimage: p.profileimage || p.image || "https://via.placeholder.com/150",
+              mainSubject: "Mathematics", // static subject
+              skillsArray: ["Problem Solving"], // static skill
+            };
+          });
         setPartners(normalized);
       })
       .catch((err) => console.error(err));
@@ -38,8 +32,7 @@ const TopStudy = () => {
 
   const topRated = [...partners].sort((a, b) => b.rating - a.rating).slice(0, 3);
 
-  if (!topRated.length)
-    return <p className="text-center mt-10">No top study partners found</p>;
+  if (!topRated.length) return <p className="text-center mt-10">No top study partners found</p>;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -47,23 +40,21 @@ const TopStudy = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {topRated.map((partner) => (
-          <div
-            key={partner._id}
-            className="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition"
-          >
+          <div key={partner._id} className="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition">
             <img
               src={partner.profileimage}
               alt={partner.name}
               className="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-4 border-blue-600"
             />
-
             <h3 className="text-xl font-semibold text-center">{partner.name}</h3>
             <p className="text-center text-gray-600 mt-1">⭐ {partner.rating}</p>
+
             <p className="text-center text-gray-700 text-sm mt-2">
-              <strong>Subject:</strong> {partner.subjectArray.join(", ") || "No subject listed"}
+              <strong>Main Subject:</strong> {partner.mainSubject}
             </p>
+
             <p className="text-center text-gray-700 text-sm mt-1">
-              <strong>Skills:</strong> {partner.skillsArray.join(", ") || "No skills listed"}
+              <strong>Skill:</strong> {partner.skillsArray[0]}
             </p>
 
             <div className="text-center mt-4">

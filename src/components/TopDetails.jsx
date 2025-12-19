@@ -32,15 +32,16 @@ const TopStudyDetails = () => {
   const image = partner.profileimage || partner.image || "https://via.placeholder.com/150";
   const rating = partner.rating || partner.rate || 0;
 
-  // Subject & Skills logic
-  const subjectsArray = partner.subject || [];
-  let subject = [];
-  let skills = [];
-
-  if (Array.isArray(subjectsArray) && subjectsArray.length > 0) {
-    subject.push(subjectsArray[0]);       // প্রথমটি subject
-    if (subjectsArray[1]) skills.push(subjectsArray[1]); // দ্বিতীয়টি skills
+  // Subject logic (dynamic)
+  let subjectsArray = [];
+  if (Array.isArray(partner.subject)) {
+    subjectsArray = partner.subject;
+  } else if (typeof partner.subject === "string") {
+    subjectsArray = partner.subject.split(",").map(s => s.trim()).filter(Boolean);
   }
+
+  const mainSubject = subjectsArray[0] || "Mathematics"; // optional default subject
+  const skill = "Problem Solving"; // static skill
 
   return (
     <div className="max-w-lg mx-auto mt-10 p-6 rounded-lg shadow-lg bg-white dark:bg-gray-800">
@@ -55,10 +56,10 @@ const TopStudyDetails = () => {
 
       <div className="mt-4 space-y-2 text-center">
         <p className="text-lg dark:text-gray-200">
-          <strong>Subject:</strong> {subject.join(", ") || "No subject listed"}
+          <strong>Subject:</strong> {mainSubject}
         </p>
         <p className="text-lg dark:text-gray-200">
-          <strong>Skills:</strong> {skills.join(", ") || "No skills listed"}
+          <strong>Skill:</strong> {skill}
         </p>
       </div>
     </div>
