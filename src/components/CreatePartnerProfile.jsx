@@ -29,7 +29,6 @@ const CreatePartnerProfile = () => {
     };
 
     try {
-      // FIXED — no more /study/study
       const res = await axios.post(API_BASE, data);
 
       if (res.data.insertedId) {
@@ -63,9 +62,7 @@ const CreatePartnerProfile = () => {
       <form onSubmit={handleSubmit} className="space-y-3">
 
         <input type="text" name="name" placeholder="Full Name" className="w-full p-2 border rounded" required />
-
         <input type="url" name="profileimage" placeholder="Profile Photo URL" className="w-full p-2 border rounded" />
-
         <input type="text" name="subject" placeholder="Subjects (comma separated)" className="w-full p-2 border rounded" required />
 
         <select name="studyMode" className="w-full p-2 border rounded">
@@ -74,7 +71,6 @@ const CreatePartnerProfile = () => {
         </select>
 
         <input type="text" name="availabilityTime" placeholder="Availability Time (e.g. 6–9 PM)" className="w-full p-2 border rounded" required />
-
         <input type="text" name="location" placeholder="Location" className="w-full p-2 border rounded" required />
 
         <select name="experienceLevel" className="w-full p-2 border rounded">
@@ -84,10 +80,14 @@ const CreatePartnerProfile = () => {
         </select>
 
         <input type="number" name="rating" placeholder="Rating (0–5)" min="0" max="5" step="0.1" className="w-full p-2 border rounded" required />
-
         <input type="email" value={user.email} readOnly className="w-full p-2 border bg-gray-100 rounded" />
 
-        <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
+        >
+          {loading && <span className="loading loading-spinner loading-sm"></span>}
           {loading ? "Saving..." : "Create Profile"}
         </button>
       </form>

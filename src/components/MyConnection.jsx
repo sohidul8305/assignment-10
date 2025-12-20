@@ -1,99 +1,101 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Link } from "react-router";
-import { AuthContext } from "../Provider/AuthProvider";
-import toast from "react-hot-toast";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router"; // ঠিক করা: react-router
+import Swal from "sweetalert2";
+import axios from "axios";
+import LoadingSpinner from "./LoadingSpinner"; // spinner import
 
-const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
-
-const TopStudy = () => {
+const MyCollection = () => {
   const [partners, setPartners] = useState([]);
-  const { user } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch(API_BASE)
-      .then((res) => res.json())
-      .then((data) => {
-        const normalized = data
-          .filter(p => p.rating > 0 || p.partnerCount > 0)
-          .map((p) => {
-            // subject প্রসেসিং
-            let allSubjectsAndSkills = [];
-            if (Array.isArray(p.subject)) {
-              allSubjectsAndSkills = p.subject;
-            } else if (typeof p.subject === "string") {
-              allSubjectsAndSkills = p.subject.split(",").map(s => s.trim()).filter(Boolean);
-            }
-
-            const mainSubject = allSubjectsAndSkills[0] || null;
-            const skillsList = allSubjectsAndSkills.slice(1); // baki skill গুলো
-
-            return {
-              ...p,
-              name: p.name || p.fullName || "N/A",
-              rating: p.rating || p.rate || 0,
-              profileimage: p.profileimage || p.image || "https://via.placeholder.com/150",
-              mainSubject,
-              skillsArray: skillsList,
-            };
-          });
+    setLoading(true);
+    axios
+      .get("https://assignmentserver-lovat.vercel.app/study")
+      .then((res) => {
+        const normalized = res.data.map((p) => ({
+          ...p,
+          subject: Array.isArray(p.subject) ? p.subject : [p.subject],
+        }));
         setPartners(normalized);
       })
-      .catch((err) => console.error(err));
+      .catch(console.log)
+      .finally(() => setLoading(false));
   }, []);
 
-  // rating অনুযায়ী top 3
-  const topRated = [...partners].sort((a, b) => b.rating - a.rating).slice(0, 3);
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "ডিলিট করলে আর ফেরত আসবে না!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setPartners(partners.filter((p) => p._id !== id));
+        Swal.fire("Deleted!", "Partner removed", "success");
+      }
+    });
+  };
 
-  if (!topRated.length) return <p className="text-center mt-10">No top study partners found</p>;
+  if (loading) return <LoadingSpinner />; // spinner ব্যবহার
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center mb-8">🌟 Top Study Partners</h2>
+    <div className="max-w-6xl mx-auto px-4 py-10">
+      <h2 className="text-3xl font-bold text-center mb-8">
+        My Collection ({partners.length})
+      </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {topRated.map((partner) => (
-          <div key={partner._id} className="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition">
-            <img
-              src={partner.profileimage}
-              alt={partner.name}
-              className="w-32 h-32 rounded-full mx-auto object-cover mb-4 border-4 border-blue-600"
-            />
-            <h3 className="text-xl font-semibold text-center">{partner.name}</h3>
-            <p className="text-center text-gray-600 mt-1">⭐ {partner.rating}</p>
-
-            {/* Main Subject */}
-            <p className="text-center text-gray-700 text-sm mt-2">
-              <strong>Main Subject:</strong> {partner.mainSubject || "No subject listed"}
-            </p>
-
-            {/* Dynamic Skill - শুধুমাত্র প্রথমটি */}
-            <p className="text-center text-gray-700 text-sm mt-1">
-              <strong>Skill:</strong> {partner.skillsArray[0] || "No skill listed"}
-            </p>
-
-            <div className="text-center mt-4">
-              {user ? (
-                <Link
-                  to={`/topdetails/${partner._id}`}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition inline-block"
-                >
-                  View Profile
-                </Link>
-              ) : (
-                <Link
-                  to="/login"
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition inline-block"
-                  onClick={() => toast.error("Please login first!")}
-                >
-                  View Profile
-                </Link>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+      {partners.length === 0 ? (
+        <p className="text-center text-gray-500">No partners found.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="table table-zebra w-full">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Partner</th>
+                <th>Subject</th>
+                <th>Study Mode</th>
+                <th className="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {partners.map((p, index) => (
+                <tr key={p._id}>
+                  <td>{index + 1}</td>
+                  <td className="flex items-center gap-3">
+                    <img
+                      src={p.profileimage || p.image || "https://via.placeholder.com/40"}
+                      alt={p.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <span className="font-medium">{p.name}</span>
+                  </td>
+                  <td>{p.subject.join(", ")}</td>
+                  <td>{p.studyMode}</td>
+                  <td className="flex gap-2 justify-center">
+                    <Link
+                      to={`/update/${p._id}`}
+                      className="btn btn-sm btn-info"
+                    >
+                      Update
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(p._id)}
+                      className="btn btn-sm btn-error"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
 
-export default TopStudy;
+export default MyCollection;
