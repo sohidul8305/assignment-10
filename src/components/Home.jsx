@@ -25,9 +25,9 @@ const Home = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div>
+    <div className="space-y-10">
       <BannerCarousel />
-      <TopStudy data={studyData} />
+      <TopStudy />
       <HowItWorks />
       <Testimonials />
     </div>

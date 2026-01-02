@@ -12,7 +12,7 @@ import AuthProvider from "./Provider/AuthProvider.jsx";
 import { Toaster } from "react-hot-toast";
 import TopStudy from "./components/TopStudy.jsx";
 import StudyCards from "./components/StudyCards.jsx";
-import PartnerDetails from "./components/PartnerDetaills.jsx";
+// import PartnerDetails from "./components/PartnerDetaills.jsx";
 import Profileuser from "./components/Profileuser.jsx";
 import CreatePartnerProfile from "./components/CreatePartnerProfile.jsx";
 import MyConnection from "./components/MyConnection.jsx";
@@ -24,6 +24,9 @@ import TopDetails from "./components/Topdetails.jsx";
 import TopStudyDetails from "./components/Topdetails.jsx";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import PartnerDetails from "./components/Partnersdetails.jsx";
+import About from "./components/About.jsx";
+import Contact from "./components/Contact.jsx";
 
 // Create React Query Client
 const queryClient = new QueryClient();
@@ -37,22 +40,23 @@ const router = createBrowserRouter([
       { path: "findpartners", element: <FindPartners />, loader: () => fetch("https://assignmentserver-lovat.vercel.app/study") },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
-      { path: "/update/:id", element: <UpdateConnection /> },
-      { path: "topstudy", element: <TopStudy />, loader: ({ params }) => fetch(`https://assignmentserver-lovat.vercel.app/study${params.id}`) },
+      { path: "update/:id", element: <UpdateConnection /> },
+      { path: "topstudy", element: <TopStudy /> },
       { path: "studycards", element: <StudyCards /> },
-      { path: "/profile", element: <Profileuser /> },
+      { path: "profile", element: <Profileuser /> },
       { path: "createpartnerprofile", element: <CreatePartnerProfile /> },
       { path: "myconnections", element: <MyConnection /> },
-      { path: "/topdetails/:id", element: <TopStudyDetails />, loader: ({ params }) => fetch(`https://assignmentserver-lovat.vercel.app/study/${params.id}`) },
+      { path: "topdetails/:id", element: <TopStudyDetails /> },
       { path: "loadingspinner", element: <LoadingSpinner /> },
-      // { path: "/partnerdetails/:id", element: <Partnersdetails /> },
-      { path: "partnerdetails/:id", element: <PartnerDetails />, loader: ({ params }) => fetch(`https://assignmentserver-lovat.vercel.app/study/${params.id}`) },
+       { path: "partnerdetails/:id", element: <PartnerDetails /> }, // single route, correct
+       { path: "about", element: <About /> }, // single route, correct
+       { path: "contact", element: <Contact /> }, // single route, correct
+
       { path: "404", element: <NotFound /> },
       { path: "*", element: <Navigate to="/404" /> },
     ],
   },
 ]);
-
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
