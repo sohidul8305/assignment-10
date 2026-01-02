@@ -27,6 +27,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PartnerDetails from "./components/Partnersdetails.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
+import Readmore from "./components/BlogDetail.jsx";
+import BlogDetail from "./components/BlogDetail.jsx";
 
 // Create React Query Client
 const queryClient = new QueryClient();
@@ -51,6 +53,7 @@ const router = createBrowserRouter([
        { path: "partnerdetails/:id", element: <PartnerDetails /> }, // single route, correct
        { path: "about", element: <About /> }, // single route, correct
        { path: "contact", element: <Contact /> }, // single route, correct
+       { path: "/blogs/:id", element: <BlogDetail /> }, // single route, correct
 
       { path: "404", element: <NotFound /> },
       { path: "*", element: <Navigate to="/404" /> },

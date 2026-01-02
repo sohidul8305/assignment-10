@@ -14,11 +14,8 @@ const Navbar = () => {
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    if (theme === "dark") document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
     localStorage.setItem("theme", theme);
   }, [theme]);
 
@@ -33,15 +30,15 @@ const Navbar = () => {
     handleLinkClick("/");
   };
 
-  const linkClass = ({ isActive }) =>
-    `${isActive ? "text-primary dark:text-blue-400" : "text-base-content dark:text-gray-50"} hover:text-primary transition-colors duration-200`;
-
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
+  const linkClass = ({ isActive }) =>
+    `${isActive ? "text-white/90 dark:text-blue-400" : "text-white/80 dark:text-gray-200"} hover:text-white transition-colors duration-200`;
+
   return (
-    <nav className="w-full bg-gradient-to-r from-primary to-secondary dark:from-gray-800 dark:to-gray-950 shadow-md sticky top-0 z-50 transition-all duration-500">
+    <nav className="w-full fixed top-0 z-50 bg-gradient-to-r from-primary to-secondary dark:from-gray-800 dark:to-gray-950 shadow-lg transition-all duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -73,6 +70,7 @@ const Navbar = () => {
                 <NavLink to="/createpartnerprofile" className={linkClass}>Create Profile</NavLink>
                 <NavLink to="/myconnections" className={linkClass}>My Connections</NavLink>
 
+                {/* Advanced Dropdown */}
                 <div className="relative">
                   <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
                     {user.photoURL ? (
@@ -109,7 +107,7 @@ const Navbar = () => {
             )}
           </ul>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleTheme}
@@ -124,23 +122,23 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {menuOpen && (
-        <ul className="md:hidden px-6 py-4 space-y-3 text-lg font-semibold transition-colors duration-500 border-t border-white/20">
-          <NavLink to="/" onClick={() => handleLinkClick("/")} className="block hover:text-primary">Home</NavLink>
-          <NavLink to="/findpartners" onClick={() => handleLinkClick("/findpartners")} className="block hover:text-primary">Find Partners</NavLink>
-          <NavLink to="/about" onClick={() => handleLinkClick("/about")} className="block hover:text-primary">About</NavLink>
-          <NavLink to="/contact" onClick={() => handleLinkClick("/contact")} className="block hover:text-primary">Contact</NavLink>
-          {user && (
+        <ul className="md:hidden px-6 py-4 space-y-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-b from-primary/90 to-secondary/90 dark:from-gray-800 dark:to-gray-950 border-t border-white/20">
+          <NavLink to="/" onClick={() => handleLinkClick("/")} className="block hover:text-white">Home</NavLink>
+          <NavLink to="/findpartners" onClick={() => handleLinkClick("/findpartners")} className="block hover:text-white">Find Partners</NavLink>
+          <NavLink to="/about" onClick={() => handleLinkClick("/about")} className="block hover:text-white">About</NavLink>
+          <NavLink to="/contact" onClick={() => handleLinkClick("/contact")} className="block hover:text-white">Contact</NavLink>
+          {user ? (
             <>
-              <NavLink to="/createpartnerprofile" onClick={() => handleLinkClick("/createpartnerprofile")} className="block hover:text-primary">Create Profile</NavLink>
-              <NavLink to="/myconnections" onClick={() => handleLinkClick("/myconnections")} className="block hover:text-primary">My Connections</NavLink>
+              <NavLink to="/createpartnerprofile" onClick={() => handleLinkClick("/createpartnerprofile")} className="block hover:text-white">Create Profile</NavLink>
+              <NavLink to="/myconnections" onClick={() => handleLinkClick("/myconnections")} className="block hover:text-white">My Connections</NavLink>
               <button onClick={handleLogout} className="w-full text-white bg-red-600 hover:bg-red-700 rounded py-2 mt-2">Logout</button>
             </>
-          )}
-          {!user && (
+          ) : (
             <>
-              <NavLink to="/login" className="block hover:text-primary">Login</NavLink>
-              <NavLink to="/register" className="block hover:text-primary">Register</NavLink>
+              <NavLink to="/login" className="block hover:text-white">Login</NavLink>
+              <NavLink to="/register" className="block hover:text-white">Register</NavLink>
             </>
           )}
         </ul>

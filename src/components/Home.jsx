@@ -4,6 +4,12 @@ import HowItWorks from "./HowItWorks";
 import Testimonials from "./Testimonials";
 import BannerCarousel from "./BannerCarousel";
 import LoadingSpinner from "../components/LoadingSpinner";
+import Services from "./Services";
+import StudyCategories from "./StudyCategories";
+import StudyHighlights from "./StudyHighlights";
+import StudyStatistics from "./StudyStatistics";
+import StudyBlogs from "./StudyBlogs";
+import Newsletter from "./Newsletter";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -30,6 +36,12 @@ const Home = () => {
       <TopStudy />
       <HowItWorks />
       <Testimonials />
+      <Services></Services>
+      <StudyCategories></StudyCategories>
+      <StudyHighlights></StudyHighlights>
+      <StudyStatistics></StudyStatistics>
+      <StudyBlogs></StudyBlogs>
+      <Newsletter></Newsletter>
     </div>
   );
 };

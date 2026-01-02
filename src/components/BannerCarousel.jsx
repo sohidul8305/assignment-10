@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 
 // --- Asset Imports ---
 import banner1 from "../assets/Banner1.jpg";
@@ -23,7 +23,7 @@ const slides = [
     subtitle: "Learn new topics from top-rated peers.",
     image: banner3,
     buttonText: "Explore Partners",
-    link: "/partners",
+    link: "/findpartners",
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ const slides = [
     subtitle: "Study smart, not alone.",
     image: banner1,
     buttonText: "Join Now",
-    link: "/join",
+    link: "/register",
   },
 ];
 
@@ -60,14 +60,12 @@ const BannerCarousel = () => {
   };
 
   const stopAutoSlide = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
+    if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
   return (
     <div
-      className="relative w-full h-[60vh] md:h-[500px] xl:h-[600px] overflow-hidden rounded-xl shadow-2xl mx-auto"
+      className="relative w-full h-[60vh] md:h-[500px] xl:h-[600px] overflow-hidden rounded-xl shadow-2xl mx-auto mt-13"
       onMouseEnter={stopAutoSlide}
       onMouseLeave={startAutoSlide}
     >
@@ -90,7 +88,6 @@ const BannerCarousel = () => {
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 max-w-3xl font-light opacity-90 drop-shadow-md animate-fadeIn">
               {slide.subtitle}
             </p>
-
             <Link
               to={slide.link}
               className="group flex items-center space-x-2 text-xl md:text-2xl font-semibold
@@ -126,7 +123,7 @@ const BannerCarousel = () => {
       </div>
 
       {/* Dot Indicators */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-20">
+      <div className="absolute bottom-12 left-0 right-0 flex justify-center space-x-2 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
@@ -139,6 +136,11 @@ const BannerCarousel = () => {
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
+      </div>
+
+      {/* Scroll Down Hint */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce z-20">
+        <ChevronDown className="w-6 h-6 md:w-8 md:h-8 text-white" />
       </div>
     </div>
   );

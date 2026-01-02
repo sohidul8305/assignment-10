@@ -6,60 +6,63 @@ import {
   FaLinkedinIn,
   FaTwitter,
 } from "react-icons/fa";
+import { Link } from "react-router";
 
 const Footer = () => {
   return (
-    <footer className="bg-neutral text-neutral-content py-10 px-4 sm:px-6 lg:px-10">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-start gap-8">
-        
-     
-        <aside className="flex flex-col items-center sm:items-start text-center sm:text-left gap-4">
-          <img
-            className="h-12 w-12 rounded-full object-cover"
-            src={logo}
-            alt="Study Mate Logo"
-          />
-          <p className="text-sm sm:text-base">
-            Study Mate Industries Ltd.
-            <br />
-            Very easy to use and helpful for group study sessions. Highly recommend it!
-          </p>
-        </aside>
+    <footer className="bg-gray-900 text-gray-200 py-12 px-6 md:px-10">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
 
-        <nav className="flex flex-col items-center sm:items-end gap-4">
-          <h6 className="text-lg font-semibold mb-2">Social Media Links</h6>
-          <div className="flex space-x-4">
-            <a
-              href="https://www.facebook.com/"
-              target="_blank"
-              rel="noreferrer"
-            >
+        {/* Logo & Description */}
+        <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4">
+          <img
+            src={logo}
+            alt="StudyMate Logo"
+            className="h-14 w-14 rounded-full object-cover"
+          />
+          <p className="text-sm md:text-base leading-relaxed">
+            StudyMate Industries Ltd. <br />
+            Your ultimate platform to find study partners, collaborate, and achieve learning goals together.
+          </p>
+        </div>
+
+        {/* Quick Links */}
+        <div className="flex flex-col items-center md:items-start text-center md:text-left gap-3">
+          <h6 className="text-lg font-semibold mb-2">Quick Links</h6>
+          <Link to="/" className="hover:text-blue-500 transition-colors">Home</Link>
+          <Link to="/about" className="hover:text-blue-500 transition-colors">About</Link>
+          <Link to="/findpartners" className="hover:text-blue-500 transition-colors">Find Partners</Link>
+          <Link to="/topstudy" className="hover:text-blue-500 transition-colors">TopStudy</Link>
+          <Link to="/contact" className="hover:text-blue-500 transition-colors">Contact</Link>
+        </div>
+
+        {/* Contact & Social Links */}
+        <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4">
+          <h6 className="text-lg font-semibold mb-2">Contact & Social</h6>
+          <p>Email: <a href="mailto:sohidul8305@gmail.com" className="hover:text-blue-500 transition-colors">sohidul8305@gmail.com</a></p>
+          <p>Phone: <a href="tel:+8801540659004" className="hover:text-blue-500 transition-colors">+880 1540659004</a></p>
+          <p>Address: Airport, Dhaka, Bangladesh</p>
+          <div className="flex space-x-4 mt-2">
+            <a href="https://www.facebook.com/" target="_blank" rel="noreferrer">
               <FaFacebookF className="text-blue-600 text-2xl hover:scale-110 transition-transform" />
             </a>
-            <a
-              href="https://twitter.com/YourHandle"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://twitter.com/" target="_blank" rel="noreferrer">
               <FaTwitter className="text-blue-400 text-2xl hover:scale-110 transition-transform" />
             </a>
-            <a
-              href="https://www.linkedin.com/feed/?trk=guest_homepage-basic_nav-header-signin"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
               <FaLinkedinIn className="text-blue-700 text-2xl hover:scale-110 transition-transform" />
             </a>
-            <a
-              href="https://www.instagram.com/"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">
               <FaInstagram className="text-pink-500 text-2xl hover:scale-110 transition-transform" />
             </a>
           </div>
-        </nav>
+        </div>
 
+      </div>
+
+      {/* Footer Bottom */}
+      <div className="mt-10 border-t border-gray-700 pt-4 text-center text-sm text-gray-400">
+        &copy; {new Date().getFullYear()} StudyMate. All rights reserved.
       </div>
     </footer>
   );
