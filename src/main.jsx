@@ -45,7 +45,7 @@ const router = createBrowserRouter([
       { path: "myconnections", element: <MyConnection /> },
       { path: "/topdetails/:id", element: <TopStudyDetails />, loader: ({ params }) => fetch(`https://assignmentserver-lovat.vercel.app/study/${params.id}`) },
       { path: "loadingspinner", element: <LoadingSpinner /> },
-      { path: "/partnerdetails/:id", element: <Partnersdetails /> },
+      // { path: "/partnerdetails/:id", element: <Partnersdetails /> },
       { path: "partnerdetails/:id", element: <PartnerDetails />, loader: ({ params }) => fetch(`https://assignmentserver-lovat.vercel.app/study/${params.id}`) },
       { path: "404", element: <NotFound /> },
       { path: "*", element: <Navigate to="/404" /> },
