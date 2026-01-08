@@ -44,7 +44,7 @@ const Contact = () => {
   return (
     <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
       {/* Hero Section */}
-      <section className="bg-blue-600 dark:bg-blue-800 text-white py-20 text-center">
+      <section className="bg-blue-600 dark:bg-blue-800 text-white py-20 text-center mt-8">
         <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
           Get in Touch
         </h1>

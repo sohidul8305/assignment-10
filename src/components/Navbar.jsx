@@ -6,7 +6,7 @@ import { FaCircleUser } from "react-icons/fa6";
 import studylogo from "../assets/studylogo.jpg";
 
 const Navbar = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, role } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -37,6 +37,39 @@ const Navbar = () => {
   const linkClass = ({ isActive }) =>
     `${isActive ? "text-white/90 dark:text-blue-400" : "text-white/80 dark:text-gray-200"} hover:text-white transition-colors duration-200`;
 
+  // Role-based menu
+  const renderMenuItems = () => {
+    if (!user) {
+      // Public menu
+      return (
+        <>
+          <NavLink to="/login" className={linkClass}>Login</NavLink>
+          <NavLink to="/register" className={linkClass}>Register</NavLink>
+        </>
+      );
+    }
+
+    if (role === "admin") {
+      return (
+        <>
+          <NavLink to="/admin" className={linkClass}>Dashboard</NavLink>
+          <NavLink to="/admin/manage-users" className={linkClass}>Manage Users</NavLink>
+          <NavLink to="/admin/manage-items" className={linkClass}>Manage Items</NavLink>
+        </>
+      );
+    }
+
+    // Default: user
+    return (
+      <>
+        <NavLink to="/dashboard" className={linkClass}>Dashboard</NavLink>
+        <NavLink to="/dashboard/profile" className={linkClass}>Profile</NavLink>
+        <NavLink to="/dashboard/add-item" className={linkClass}>Add Item</NavLink>
+        <NavLink to="/dashboard/my-items" className={linkClass}>My Items</NavLink>
+      </>
+    );
+  };
+
   return (
     <nav className="w-full fixed top-0 z-50 bg-gradient-to-r from-primary to-secondary dark:from-gray-800 dark:to-gray-950 shadow-lg transition-all duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,6 +90,8 @@ const Navbar = () => {
             <NavLink to="/about" className={linkClass}>About</NavLink>
             <NavLink to="/contact" className={linkClass}>Contact</NavLink>
 
+            {renderMenuItems()}
+
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full text-white hover:bg-white/20 transition-colors duration-200"
@@ -65,45 +100,34 @@ const Navbar = () => {
               {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
             </button>
 
-            {user ? (
-              <>
-                <NavLink to="/createpartnerprofile" className={linkClass}>Create Profile</NavLink>
-                <NavLink to="/myconnections" className={linkClass}>My Connections</NavLink>
-
-                {/* Advanced Dropdown */}
-                <div className="relative">
-                  <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
-                    {user.photoURL ? (
-                      <img src={user.photoURL} className="w-9 h-9 rounded-full border-2 border-white object-cover" alt="User" />
-                    ) : (
-                      <FaCircleUser className="w-9 h-9 text-white transition-colors duration-200" />
-                    )}
-                  </button>
-
-                  {dropdownOpen && (
-                    <ul className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
-                      <li>
-                        <button onClick={() => handleLinkClick("/profile")} className="block w-full text-left px-4 py-2 text-gray-900 dark:text-gray-50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-                          Profile
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 mt-1 transition-colors duration-200"
-                        >
-                          Logout
-                        </button>
-                      </li>
-                    </ul>
+            {user && (
+              <div className="relative">
+                <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
+                  {user.photoURL ? (
+                    <img src={user.photoURL} className="w-9 h-9 rounded-full border-2 border-white object-cover" alt="User" />
+                  ) : (
+                    <FaCircleUser className="w-9 h-9 text-white transition-colors duration-200" />
                   )}
-                </div>
-              </>
-            ) : (
-              <>
-                <NavLink to="/login" className={linkClass}>Login</NavLink>
-                <NavLink to="/register" className={linkClass}>Register</NavLink>
-              </>
+                </button>
+
+                {dropdownOpen && (
+                  <ul className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
+                    <li>
+                      <button onClick={() => handleLinkClick(role === "admin" ? "/admin" : "/dashboard/profile")} className="block w-full text-left px-4 py-2 text-gray-900 dark:text-gray-50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+                        Profile
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 mt-1 transition-colors duration-200"
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
             )}
           </ul>
 
@@ -129,17 +153,9 @@ const Navbar = () => {
           <NavLink to="/findpartners" onClick={() => handleLinkClick("/findpartners")} className="block hover:text-white">Find Partners</NavLink>
           <NavLink to="/about" onClick={() => handleLinkClick("/about")} className="block hover:text-white">About</NavLink>
           <NavLink to="/contact" onClick={() => handleLinkClick("/contact")} className="block hover:text-white">Contact</NavLink>
-          {user ? (
-            <>
-              <NavLink to="/createpartnerprofile" onClick={() => handleLinkClick("/createpartnerprofile")} className="block hover:text-white">Create Profile</NavLink>
-              <NavLink to="/myconnections" onClick={() => handleLinkClick("/myconnections")} className="block hover:text-white">My Connections</NavLink>
-              <button onClick={handleLogout} className="w-full text-white bg-red-600 hover:bg-red-700 rounded py-2 mt-2">Logout</button>
-            </>
-          ) : (
-            <>
-              <NavLink to="/login" className="block hover:text-white">Login</NavLink>
-              <NavLink to="/register" className="block hover:text-white">Register</NavLink>
-            </>
+          {renderMenuItems()}
+          {user && (
+            <button onClick={handleLogout} className="w-full text-white bg-red-600 hover:bg-red-700 rounded py-2 mt-2">Logout</button>
           )}
         </ul>
       )}

@@ -1,41 +1,49 @@
-// src/Provider/AuthProvider.js
-import React, { createContext, useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
-import { app } from "../firebase/firebase.config";
+import { createContext, useEffect, useState } from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../firebase/firebase.config";
 
 export const AuthContext = createContext(null);
-const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState("user");
   const [loading, setLoading] = useState(true);
 
-  // Listen to Firebase auth state changes
+  const detectRole = (email) => {
+    if (email === "demo.admin@example.com") return "admin";
+    return "user";
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      if (currentUser) {
+        setUser(currentUser);
+        setRole(detectRole(currentUser.email));
+      } else {
+        setUser(null);
+        setRole("user");
+      }
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
-  // Update user profile
-  const updateUser = (updateData) => {
-    const currentUser = auth.currentUser;
-    if (!currentUser) return Promise.reject(new Error("User not logged in"));
-
-    return updateProfile(currentUser, updateData).then(() => {
-      setUser({ ...currentUser, ...updateData });
-      return currentUser;
-    });
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      setRole("user");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
-  // Logout
-  const logout = () => signOut(auth).then(() => setUser(null));
-
-  const authInfo = { user, loading, logout, updateUser, setUser };
-
-  return <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, role, loading, setUser, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

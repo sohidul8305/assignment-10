@@ -4,7 +4,7 @@ import aboutImage from "../assets/about-study.jpg";
 
 const LoadingSpinner = () => {
   return (
-    <div className="flex justify-center items-center min-h-[40vh]">
+    <div className="flex justify-center items-center min-h-[40vh] mt-8">
       <span className="loading loading-spinner loading-xl"></span>
     </div>
   );

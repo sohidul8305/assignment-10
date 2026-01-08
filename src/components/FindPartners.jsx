@@ -4,14 +4,20 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../Provider/AuthProvider";
 
+const PAGE_SIZE = 6; // প্রতি পেজে কতটি partner দেখাবো
+
 const FindPartners = () => {
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [currentPage, setCurrentPage] = useState(1);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // ==========================
+  // Load all partners
+  // ==========================
   useEffect(() => {
     setLoading(true);
     axios
@@ -27,6 +33,9 @@ const FindPartners = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  // ==========================
+  // View Profile handler
+  // ==========================
   const handleViewProfile = (id) => {
     if (!user) {
       toast.error("Please login first!");
@@ -36,14 +45,28 @@ const FindPartners = () => {
     navigate(`/partnerdetails/${id}`);
   };
 
+  // ==========================
+  // Filter + Search + Sort
+  // ==========================
   const filteredPartners = partners
-    .filter((p) => p.subject.some((s) => s.toLowerCase().includes(searchTerm.toLowerCase())))
+    .filter((p) =>
+      p.subject.some((s) => s.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
     .sort((a, b) => {
       const levels = { Beginner: 1, Intermediate: 2, Expert: 3 };
       return sortOrder === "asc"
         ? (levels[a.experienceLevel] || 0) - (levels[b.experienceLevel] || 0)
         : (levels[b.experienceLevel] || 0) - (levels[a.experienceLevel] || 0);
     });
+
+  // ==========================
+  // Pagination
+  // ==========================
+  const totalPages = Math.ceil(filteredPartners.length / PAGE_SIZE);
+  const paginatedPartners = filteredPartners.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
 
   const btnColors = [
     "bg-blue-600 hover:bg-blue-700",
@@ -55,8 +78,10 @@ const FindPartners = () => {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Find Your Study Partners</h2>
+    <div className="max-w-6xl mx-auto px-4 py-10 mt-5">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+        Find Your Study Partners
+      </h2>
 
       {/* Search + Sort */}
       <div className="flex justify-between items-center mb-6 flex-wrap gap-2">
@@ -73,7 +98,10 @@ const FindPartners = () => {
           type="text"
           placeholder="Search by subject..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1); // search change হলে পেজ reset
+          }}
           className="input input-bordered w-full max-w-xs"
         />
       </div>
@@ -84,9 +112,10 @@ const FindPartners = () => {
         </div>
       )}
 
+      {/* Partners Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {!loading && filteredPartners.length > 0 ? (
-          filteredPartners.map((partner, idx) => (
+        {!loading && paginatedPartners.length > 0 ? (
+          paginatedPartners.map((partner, idx) => (
             <div
               key={partner._id}
               className="bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition flex flex-col items-center"
@@ -113,7 +142,9 @@ const FindPartners = () => {
               <div className="text-center mt-4 w-full">
                 <button
                   onClick={() => handleViewProfile(partner._id)}
-                  className={`block w-full px-4 py-2 text-white rounded-lg transition ${btnColors[idx % btnColors.length]}`}
+                  className={`block w-full px-4 py-2 text-white rounded-lg transition ${
+                    btnColors[idx % btnColors.length]
+                  }`}
                 >
                   View Profile
                 </button>
@@ -121,9 +152,44 @@ const FindPartners = () => {
             </div>
           ))
         ) : (
-          !loading && <p className="col-span-full text-center text-gray-500">No partners found.</p>
+          !loading && (
+            <p className="col-span-full text-center text-gray-500">
+              No partners found.
+            </p>
+          )
         )}
       </div>
+
+      {/* ==========================
+           Pagination Controls
+      ========================== */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center mt-8 gap-2">
+          <button
+            className="btn btn-sm"
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              className={`btn btn-sm ${currentPage === i + 1 ? "btn-active" : ""}`}
+              onClick={() => setCurrentPage(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="btn btn-sm"
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
