@@ -109,8 +109,8 @@ const Login = () => {
 
   return (
     <div className="hero bg-base-200 min-h-screen">
-      <div className="hero-content">
-        <div className="card bg-blue-400 w-full max-w-md shadow-2xl p-10">
+      <div className="hero-content mt-10">
+        <div className="card bg-blue-400 max-w-90 shadow-2xl p-10">
           <h1 className="text-3xl font-bold text-center text-white mb-6">
             Login
           </h1>

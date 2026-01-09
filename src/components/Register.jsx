@@ -126,7 +126,7 @@ const Register = () => {
   };
 
   return (
-    <div className="hero bg-base-200 min-h-screen">
+    <div className="hero bg-base-200 min-h-screen mt-10">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="card bg-blue-400 w-full max-w-md shadow-2xl p-10">
           <h1 className="text-3xl font-bold text-center text-white mb-6">

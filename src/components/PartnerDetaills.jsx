@@ -4,8 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { AuthContext } from "../Provider/AuthProvider";
 
-// ✅ Correct backend base URL
-const API_BASE = "https://assignmentserver-lovat.vercel.app/study";
+const API_BASE = "https://assignmentserver-lovat.vercel.app/study"; // backend URL
 
 const PartnerDetails = () => {
   const { id } = useParams();
@@ -15,9 +14,6 @@ const PartnerDetails = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // =========================
-  // Load partner details
-  // =========================
   useEffect(() => {
     const fetchPartner = async () => {
       try {
@@ -30,13 +26,9 @@ const PartnerDetails = () => {
         setLoading(false);
       }
     };
-
     fetchPartner();
   }, [id]);
 
-  // =========================
-  // Send request + increment count
-  // =========================
   const handleSendRequest = async () => {
     if (!user) {
       toast.error("Please login first");
@@ -54,9 +46,10 @@ const PartnerDetails = () => {
     try {
       const res = await axios.post(`${API_BASE}/${partner._id}/incrementCount`);
 
+      console.log("API response:", res.data);
+
       if (res.data?.success && res.data.partner) {
-        // ✅ Update UI
-        setPartner(res.data.partner);
+        setPartner(res.data.partner); // Update UI instantly
         toast.success("Partner request sent! Count updated.");
       } else {
         toast.error(res.data?.message || "Failed to send request");
@@ -69,15 +62,9 @@ const PartnerDetails = () => {
     }
   };
 
-  // =========================
-  // Loading / Not found UI
-  // =========================
   if (loading) return <p className="text-center mt-10">Loading...</p>;
   if (!partner) return <p className="text-center mt-10">Partner Not Found</p>;
 
-  // =========================
-  // Main UI
-  // =========================
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow">
       <img
