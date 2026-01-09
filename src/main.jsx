@@ -36,6 +36,7 @@ import ManageItems from "../src/pages/Dashboard/Admin/ManageItems";
 import TopStudyDetails from "./components/Topdetails.jsx";
 import PrivateRoute from "./Routes/PrivateRoute.jsx";
 import Reports from "./pages/Dashboard/Admin/Reports.jsx";
+import Support from "./components/Support.jsx";
 
 // Create React Query Client
 const queryClient = new QueryClient();
@@ -61,6 +62,7 @@ const router = createBrowserRouter([
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
       { path: "/blogs/:id", element: <BlogDetail /> },
+      { path: "support", element: <Support /> },
 // App.jsx (Router)
 {
   path: "/dashboard",

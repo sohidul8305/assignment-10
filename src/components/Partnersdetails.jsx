@@ -49,37 +49,44 @@ useEffect(() => {
   // ======================
   // SEND REQUEST + COUNT +1
   // ======================
-  const handleSendRequest = async () => {
-    if (!user) {
-      toast.error("Please login first");
-      navigate("/login");
-      return;
+const handleSendRequest = async () => {
+  if (!user) {
+    toast.error("Please login first");
+    navigate("/login");
+    return;
+  }
+
+  if (sending) return;
+
+  if (!partner?._id) {
+    toast.error("Partner ID not found");
+    return;
+  }
+
+  setSending(true);
+
+  try {
+    const res = await axios.post(
+      `${API_BASE}/${partner._id}/incrementCount` // ✅ correct URL
+    );
+
+    if (res.data?.success) {
+      setPartner(res.data.partner);
+      toast.success("Partner request sent!");
+    } else {
+      toast.error(res.data?.message || "Request failed");
     }
+  } catch (err) {
+    console.error("Send request error:", err);
+    toast.error("Failed to send request");
+  } finally {
+    setSending(false);
+  }
+};
 
-    if (sending) return;
 
-    setSending(true);
 
-    try {
-      const res = await axios.post(
-        `${API_BASE}/study/${partner._id}/incrementCount`
-      );
 
-      if (res.data?.success) {
-        setPartner(res.data.partner); // backend থেকে updated object আসে
-        toast.success("Partner request sent!");
-      } else {
-        toast.error("Request failed");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to send request");
-    } finally {
-      setSending(false);
-    }
-  };
-  console.log("Partner object:", partner);
-console.log("Partner _id:", partner?._id);
 
 
   // ======================

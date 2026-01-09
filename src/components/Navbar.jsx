@@ -89,6 +89,8 @@ const Navbar = () => {
             <NavLink to="/findpartners" className={linkClass}>Find Partners</NavLink>
             <NavLink to="/about" className={linkClass}>About</NavLink>
             <NavLink to="/contact" className={linkClass}>Contact</NavLink>
+             <NavLink to="/support" className={linkClass}>Support</NavLink>
+
 
             {renderMenuItems()}
 
@@ -153,6 +155,7 @@ const Navbar = () => {
           <NavLink to="/findpartners" onClick={() => handleLinkClick("/findpartners")} className="block hover:text-white">Find Partners</NavLink>
           <NavLink to="/about" onClick={() => handleLinkClick("/about")} className="block hover:text-white">About</NavLink>
           <NavLink to="/contact" onClick={() => handleLinkClick("/contact")} className="block hover:text-white">Contact</NavLink>
+
           {renderMenuItems()}
           {user && (
             <button onClick={handleLogout} className="w-full text-white bg-red-600 hover:bg-red-700 rounded py-2 mt-2">Logout</button>
